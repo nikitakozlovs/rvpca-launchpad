@@ -6,10 +6,12 @@ Latviešu valodā: [`docs/lv/izstrade.md`](../lv/izstrade.md)
 
 ## What this is
 
-A static page with no dependencies and **no build step**. There is no
-`npm install` and no `npm run build`. Three authored files (`index.html`,
-`launchpad.css`, `app.js`), one config file, and a `brand/` folder holding the
-design system.
+A static page with **no runtime dependencies and no build step**. Three authored
+files (`index.html`, `launchpad.css`, `app.js`), one config file, the design
+system in `brand/`, and two third-party libraries in `vendor/`.
+
+There is a `package.json`, but it is **for the tests only**. Nothing is built for
+deployment: the folder of files is the finished page.
 
 ## Running it
 
@@ -17,7 +19,7 @@ Two routes, both work:
 
 ```bash
 # 1. Static server (preferred — closest to the deployed environment)
-python3 -m http.server 8000
+npm run serve            # i.e. python3 -m http.server 8000 --bind 127.0.0.1
 # → http://127.0.0.1:8000
 
 # 2. Straight from the file
@@ -34,13 +36,14 @@ need one.
 ```
 index.html          page shell
 config/apps.js      CONTENT — normally the only file you edit
-app.js              rendering, filter, theme toggle
-launchpad.css       bento grid, tiles, footer
+app.js              rendering, theme and view toggles, keyboard
+launchpad.css       bento grid, tiles, list view, footer
 brand/              the design system, vendored (one patched line — ADR 0001)
+vendor/             daisyUI + Tailwind, self-hosted
 test/               Playwright tests
 tools/              static checks
 docs/adr/           architecture decision records
-vendor/             daisyUI + Tailwind, self-hosted
+docs/perf-baseline.md   performance baseline
 docs/               this documentation
 ```
 
@@ -58,6 +61,17 @@ system's own data files (`assets/app-icons/systems-data.js` → `window.RIGA_SYS
 | `groups` | array | Groups, in the order given |
 
 ### Group fields
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | string | Internal identifier; also the anchor (`#iepirkumi`) |
+| `title` | string | Group name. Empty → `Bez nosaukuma` |
+| `icon` | string | Font Awesome icon beside the title, e.g. `fa-users`. Optional |
+| `span` | `narrow` \| `wide` \| `full` | How much of the outer grid the group takes |
+| `order` | number | Group order. Without it, config order stands |
+| `apps` | array | Apps. If empty, the group is not drawn at all |
+
+### App fields
 
 | Field | Type | Description |
 |---|---|---|
@@ -185,6 +199,20 @@ separate mobile stylesheet.
 secondary links. Meant for a TV in a corridor; in kiosk mode the URL with the
 parameter is the whole setup.
 
+### Stored state
+
+Only two keys are kept in `localStorage`, both purely presentational — no app
+data, no personal data:
+
+| Key | Values |
+|---|---|
+| `rvpca-theme` | `light` \| `dark` |
+| `rvpca-view` | `grid` \| `list` |
+
+The theme is restored at the top of `index.html`, before first paint, so dark-mode
+users get no flash of light. In private mode, where `localStorage` throws, both
+toggles still work — the choice just is not remembered.
+
 ## Keyboard
 
 `Tab` reaches **every** tile in the normal order. Arrow keys are an addition:
@@ -248,8 +276,8 @@ Everything under `brand/` is copied from the design system kit essentially
 unmodified — with exactly one deliberate, marked exception, documented below.
 
 **Do not patch it in place.** When the design system is updated, re-copy the
-files. If something needs overriding, do it in `launchpad.css`, which loads after
-`brand/styles.css`.
+files. If something needs overriding, do it in `launchpad.css`, which loads
+last, after every brand file.
 
 ### Re-vendoring: the one line to re-apply
 
@@ -275,9 +303,10 @@ hunk should be the only difference.
 Verify afterwards with the external-request guard described under
 [No external requests](#no-external-requests).
 
-Included: `styles.css`, `colors_and_type.css`, `daisyui-theme.css`, Gilroy, Font
-Awesome, the product mark exports, the pattern tiles, and the 14 key glyphs. Added
-by us, not from the kit: `brand/fonts/google-sans/` (see below).
+Included: `colors_and_type.css`, `daisyui-theme.css`, Gilroy, Font Awesome, the
+product mark exports, the pattern tiles, the 14 key glyphs, and the unDraw
+illustrations. `styles.css` is present but not loaded — see ADR 0003. Added by
+us, not from the kit: `brand/fonts/google-sans/` (see below).
 
 Not included: the kit's `uploads/`, `_ds_bundle.js`, `components/`, `ui_kits/`.
 The design system itself states that its JSX is "cosmetic, not production-ready"
@@ -318,14 +347,22 @@ The same applies to the colourways: `.theme-red` pairs with
 
 ## Pre-deploy checklist
 
+Most of this is covered by the tests:
+
+```bash
+npm test && npm run check:external
+```
+
+What still needs a person:
+
 - [ ] Every `url` points at a real address, not `#`
+- [ ] Every app has an `owner` and `contact`
 - [ ] The page opens both from a server and from `file://`
-- [ ] No console errors
-- [ ] **No external requests** — run the guard above; it must report zero
-- [ ] No horizontal scrolling at any width from 1440px down to 360px
-- [ ] Dark mode recolours everything; no hard-coded hex left anywhere
-- [ ] `Tab` reaches every tile and the focus ring is visible
-- [ ] `IZSTRĀDĒ` tiles do not open on click or `Enter`
+- [ ] Both views and `?mode=wallboard` look right
+- [ ] Copy is Latvian, correct diacritics, sentence case
+- [ ] **A real screen-reader pass** (NVDA or VoiceOver) — automation does not
+      replace this
+- [ ] Performance re-measured if `vendor/` or the fonts changed
 
 ## No external requests
 

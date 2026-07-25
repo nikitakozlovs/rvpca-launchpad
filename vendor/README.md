@@ -25,7 +25,13 @@ Fonts are vendored separately, alongside the design system's own faces:
 npm i --no-save daisyui@5 @tailwindcss/browser@4
 cp node_modules/daisyui/daisyui.css vendor/daisyui.css
 cp node_modules/@tailwindcss/browser/dist/index.global.js vendor/tailwindcss-browser.js
-rm -rf node_modules package.json package-lock.json
+npm ci                      # restore the test dependencies --no-save skipped
 ```
 
-Then update the version table above.
+`--no-save` keeps these two out of `package.json` — they are runtime assets that
+live in `vendor/`, not build dependencies. Do **not** delete `package.json`: it
+is committed and holds the test toolchain.
+
+Then update the version table above, re-run `npm test`, and refresh
+[`docs/perf-baseline.md`](../docs/perf-baseline.md) — these two files dominate
+the page weight.

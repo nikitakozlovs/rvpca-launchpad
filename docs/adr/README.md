@@ -13,6 +13,7 @@ reverted by accident. Records are append-only.*
 |---|---|---|
 | [0001](0001-patched-brand-font-import.md) | `brand/colors_and_type.css` fontu imports norāda uz lokālo kopiju | pieņemts |
 | [0002](0002-lp-class-namespace.md) | Visām projekta CSS klasēm priedēklis `lp-` | pieņemts |
+| [0003](0003-link-brand-token-files-directly.md) | `index.html` ielādē marku failus tieši, nevis caur `brand/styles.css` | pieņemts |
 
 ## Kad rakstīt jaunu ierakstu
 

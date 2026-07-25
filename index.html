@@ -26,9 +26,13 @@
   }
 </script>
 
-<!-- Load order is mandated by the Sintakse design system (see brand/styles.css):
+<!-- Load order is mandated by the Sintakse design system:
      daisyUI stylesheet → Tailwind browser build → brand tokens → icons → page CSS.
-     Both are self-hosted from vendor/ — the page makes no external requests. -->
+     daisyUI and Tailwind are self-hosted from vendor/ — no external requests.
+
+     The two brand token files are linked directly rather than through the kit's
+     brand/styles.css, which only @imports them: Tailwind's browser build
+     re-resolves @import against the document root and 404s. See ADR 0003. -->
 <link href="vendor/daisyui.css" rel="stylesheet" type="text/css">
 <script src="vendor/tailwindcss-browser.js"></script>
 <link rel="stylesheet" href="brand/colors_and_type.css">

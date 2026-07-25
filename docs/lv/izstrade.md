@@ -6,9 +6,13 @@ English version: [`docs/en/development.md`](../en/development.md)
 
 ## Kas tas ir
 
-Statiska lapa bez atkarībām un **bez būvēšanas soļa**. Nav `npm install`, nav
-`npm run build`. Trīs autordarba faili (`index.html`, `launchpad.css`, `app.js`),
-viens konfigurācijas fails un `brand/` mape ar dizaina sistēmu.
+Statiska lapa **bez izpildlaika atkarībām un bez būvēšanas soļa**. Trīs
+autordarba faili (`index.html`, `launchpad.css`, `app.js`), viens
+konfigurācijas fails, dizaina sistēma mapē `brand/` un divas trešo pušu
+bibliotēkas mapē `vendor/`.
+
+`package.json` repozitorijā ir, bet **tikai testiem**. Publicēšanai neko nevajag
+būvēt: mape ar failiem ir gatavā lapa.
 
 ## Kā palaist
 
@@ -16,7 +20,7 @@ Divi ceļi, abi der:
 
 ```bash
 # 1. Statisks serveris (ieteicams — tuvāk publicētajai videi)
-python3 -m http.server 8000
+npm run serve            # jeb: python3 -m http.server 8000 --bind 127.0.0.1
 # → http://127.0.0.1:8000
 
 # 2. Tieši no faila
@@ -33,12 +37,13 @@ bloķēts, un tas piespiestu turēt serveri arī tur, kur tas nav vajadzīgs.
 index.html          lapas karkass
 config/apps.js      SATURS — vienīgais fails, ko parasti maina
 app.js              attēlošana, tēmas un skata slēdži, tastatūra
-launchpad.css       bento režģis, flīzes, kājene
+launchpad.css       bento režģis, flīzes, saraksta skats, kājene
 brand/              dizaina sistēma, pārņemta (viena labota rinda — ADR 0001)
+vendor/             daisyUI + Tailwind, lokāli
 test/               Playwright testi
 tools/              statiskās pārbaudes
 docs/adr/           arhitektūras lēmumi
-vendor/             daisyUI + Tailwind, lokāli
+docs/perf-baseline.md   veiktspējas atskaites punkts
 docs/               šī dokumentācija
 ```
 
@@ -56,6 +61,17 @@ sistēmas datu failiem (`assets/app-icons/systems-data.js` → `window.RIGA_SYST
 | `groups` | masīvs | Grupas norādītajā secībā |
 
 ### Grupas lauki
+
+| Lauks | Tips | Apraksts |
+|---|---|---|
+| `id` | teksts | Iekšējs identifikators; vienlaikus enkurs (`#iepirkumi`) |
+| `title` | teksts | Grupas nosaukums. Ja tukšs → `Bez nosaukuma` |
+| `icon` | teksts | Font Awesome ikona blakus nosaukumam, piem. `fa-users`. Neobligāta |
+| `span` | `narrow` \| `wide` \| `full` | Cik platu grupa aizņem ārējo režģi |
+| `order` | skaitlis | Grupu kārtība. Bez tā paliek konfigurācijas secība |
+| `apps` | masīvs | Lietotnes. Ja tukšs, grupa netiek zīmēta vispār |
+
+### Lietotnes lauki
 
 | Lauks | Tips | Apraksts |
 |---|---|---|
@@ -184,6 +200,20 @@ vērtības, nevis atsevišķs izmēru komplekts.
 joslas, kājenes un sekundārajām saitēm. Domāts televizoram gaitenī; kioska
 režīmā adrese ar parametru ir viss, kas jāiestata.
 
+### Saglabātais stāvoklis
+
+`localStorage` tiek turētas tikai divas atslēgas, un abas ir tikai izskata
+izvēles — nekādu lietotņu datu, nekādu personas datu:
+
+| Atslēga | Vērtības |
+|---|---|
+| `rvpca-theme` | `light` \| `dark` |
+| `rvpca-view` | `grid` \| `list` |
+
+Tēma tiek atjaunota `index.html` sākumā, pirms pirmās zīmēšanas, lai tumšā
+režīma lietotājam neuzplaiksnī gaišā lapa. Privātajā režīmā, kur `localStorage`
+met kļūdu, abi slēdži strādā — tikai izvēle netiek atcerēta.
+
 ## Tastatūra
 
 `Tab` iet cauri **visām** flīzēm parastajā secībā. Bultiņas ir papildinājums:
@@ -247,7 +277,7 @@ izmaiņām — ar tieši vienu apzinātu, atzīmētu izņēmumu, kas aprakstīts
 
 **Nelabo neko turpat.** Kad dizaina sistēma tiek atjaunināta, pārkopē failus
 no jauna. Ja kaut kas ir jāpārraksta, dari to `launchpad.css` failā — tas
-ielādējas pēc `brand/styles.css`.
+ielādējas pēdējais, pēc visiem marku failiem.
 
 ### Pārkopēšana: viena rinda, kas jāatjauno
 
@@ -273,8 +303,9 @@ ka nekas cits nav aizgājis pa savu ceļu, salīdzini pārkopēto koku ar komple
 Pēc tam pārbaudi ar ārējo pieprasījumu sargu, kas aprakstīts sadaļā
 [Nekādu ārējo pieprasījumu](#nekādu-ārējo-pieprasījumu).
 
-Iekļauts: `styles.css`, `colors_and_type.css`, `daisyui-theme.css`, Gilroy,
-Font Awesome, produktu marķējumu eksporti, rakstu flīzes, 14 atslēgu glifi.
+Iekļauts: `colors_and_type.css`, `daisyui-theme.css`, Gilroy, Font Awesome,
+produktu marķējumu eksporti, rakstu flīzes, 14 atslēgu glifi, unDraw
+ilustrācijas. `styles.css` mapē ir, bet netiek ielādēts — sk. ADR 0003.
 Mūsu pievienots, nevis no komplekta: `brand/fonts/google-sans/` (sk. zemāk).
 
 Nav iekļauts: komplekta `uploads/`, `_ds_bundle.js`, `components/`, `ui_kits/`.
@@ -318,14 +349,22 @@ Tas pats princips attiecas uz krāsu variantiem: `.theme-red` iet kopā ar
 
 ## Pārbaude pirms publicēšanas
 
+Lielāko daļu pārbauda testi:
+
+```bash
+npm test && npm run check:external
+```
+
+Kas jāpārbauda cilvēkam:
+
 - [ ] Visi `url` lauki norāda uz īstām adresēm, nevis `#`
+- [ ] Katrai lietotnei ir `owner` un `contact`
 - [ ] Lapa atveras gan no servera, gan no `file://`
-- [ ] Konsolē nav kļūdu
-- [ ] **Nav ārējo pieprasījumu** — palaid sargu no augšas; rezultātam jābūt nullei
-- [ ] Nav horizontālas ritināšanas nevienā platumā no 1440px līdz 360px
-- [ ] Tumšais režīms pārkrāso visu; nekur nav iekodētu heksadecimālo vērtību
-- [ ] `Tab` iet cauri visām flīzēm un fokusa gredzens ir redzams
-- [ ] `IZSTRĀDĒ` flīzes neatveras ne ar klikšķi, ne ar `Enter`
+- [ ] Abi skati un `?mode=wallboard` izskatās pareizi
+- [ ] Teksti ir latviski, ar pareizu diakritiku, teikuma reģistrā
+- [ ] **Pārbaude ar īstu ekrānlasītāju** (NVDA vai VoiceOver) — to automātika
+      neaizstāj
+- [ ] Veiktspēja pārmērīta, ja mainīts `vendor/` vai fonti
 
 ## Nekādu ārējo pieprasījumu
 

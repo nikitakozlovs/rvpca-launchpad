@@ -56,8 +56,7 @@ sistēmas datu failiem (`assets/app-icons/systems-data.js` → `window.RIGA_SYST
 
 | Lauks | Tips | Apraksts |
 |---|---|---|
-| `title` | teksts | Lapas virsraksts; nonāk arī `<title>` tagā |
-| `lead` | teksts | Viena rinda zem virsraksta |
+| `title` | teksts | Nonāk `<title>` tagā un vizuāli slēptajā `<h1>` |
 | `groups` | masīvs | Grupas norādītajā secībā |
 
 ### Grupas lauki
@@ -196,9 +195,10 @@ atsevišķs mobilais CSS.
 `localStorage` atslēgā `rvpca-view`. Blīvumu dod dizaina sistēmas `.dense`
 vērtības, nevis atsevišķs izmēru komplekts.
 
-**Sienas ekrāns** — `index.html?mode=wallboard`. Lielāks mērogs, bez augšējās
-joslas, kājenes un sekundārajām saitēm. Domāts televizoram gaitenī; kioska
-režīmā adrese ar parametru ir viss, kas jāiestata.
+**Sienas ekrāns** — `index.html?mode=wallboard`. Lielāks mērogs, bez pogām,
+kājenes un sekundārajām saitēm. Vārdzīme paliek un tiek palielināta: kopš lapas
+galva ir noņemta, tā ir vienīgais, kas nosauc ekrānu. Domāts televizoram
+gaitenī; kioska režīmā adrese ar parametru ir viss, kas jāiestata.
 
 ### Saglabātais stāvoklis
 
@@ -213,6 +213,11 @@ izvēles — nekādu lietotņu datu, nekādu personas datu:
 Tēma tiek atjaunota `index.html` sākumā, pirms pirmās zīmēšanas, lai tumšā
 režīma lietotājam neuzplaiksnī gaišā lapa. Privātajā režīmā, kur `localStorage`
 met kļūdu, abi slēdži strādā — tikai izvēle netiek atcerēta.
+
+Lapai nav atsevišķas galvas ar lielu virsrakstu. Augšējā josla jau nosauc
+darbvirsmu, tāpēc atkārtojums tikai aizņēma vietu. `<h1>` dokumentā ir, bet
+`sr-only` — bez tā grupu `<h2>` paliktu bez virslīmeņa un ekrānlasītāja
+lietotājs zaudētu orientieri. Virsrakstu hierarhiju pārbauda tests.
 
 ## Tastatūra
 

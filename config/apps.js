@@ -25,7 +25,6 @@
 
 window.RVPCA_LAUNCHPAD = {
   title: 'RVP CA darbvirsma',
-  lead: 'Rīgas valstspilsētas pašvaldības Centrālās administrācijas iekšējās lietotnes.',
 
   groups: [
     {

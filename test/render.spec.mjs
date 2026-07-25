@@ -104,12 +104,16 @@ test.describe('Attēlošana un izkārtojums', () => {
     await expect(page.locator('body')).toHaveClass(/lp-view-list/);
   });
 
-  test('sienas ekrāna režīms noņem hromu', async ({ page }) => {
+  test('sienas ekrāna režīms noņem vadīklas, bet patur vārdzīmi', async ({ page }) => {
     await page.goto('/index.html?mode=wallboard');
     await expect(page.locator('body')).toHaveClass(/lp-wallboard/);
-    await expect(page.locator('.lp-topbar')).toBeHidden();
     await expect(page.locator('.lp-footer')).toBeHidden();
+    await expect(page.locator('.lp-topbar__tools')).toBeHidden();
     await expect(page.locator('.lp-tile')).toHaveCount(9);
+
+    /* Kad lapas galva ir noņemta, vārdzīme ir vienīgais, kas nosauc
+       ekrānu. Televizoram gaitenī bez tās nebūtu nekā. */
+    await expect(page.locator('.lp-wordmark__text')).toBeVisible();
   });
 
   test('grupu enkuri ved uz sadaļu', async ({ page }) => {
@@ -117,8 +121,21 @@ test.describe('Attēlošana un izkārtojums', () => {
     await expect(anchor).toHaveAttribute('href', '#iepirkumi');
   });
 
-  test('meklēšana un faktūra ir noņemtas', async ({ page }) => {
+  test('meklēšana, faktūra un lapas galva ir noņemtas', async ({ page }) => {
     await expect(page.locator('input')).toHaveCount(0);
     await expect(page.locator('[class*=texture]')).toHaveCount(0);
+    await expect(page.locator('[class*=lp-page__]')).toHaveCount(0);
+
+    /* Virsraksts paliek dokumentā, tikai nav redzams: bez tā grupu <h2>
+       paliktu bez virslīmeņa. */
+    const h1 = page.locator('h1');
+    await expect(h1).toHaveCount(1);
+    await expect(h1).toHaveClass(/sr-only/);
+    await expect(h1).toHaveText('RVP CA darbvirsma');
+
+    /* Pirmais redzamais elements zem joslas ir jau pirmā grupa. */
+    const gap = await page.locator('.lp-group').first()
+      .evaluate(el => el.getBoundingClientRect().top);
+    expect(gap).toBeLessThan(220);
   });
 });

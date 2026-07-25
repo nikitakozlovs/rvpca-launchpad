@@ -56,8 +56,7 @@ system's own data files (`assets/app-icons/systems-data.js` → `window.RIGA_SYS
 
 | Field | Type | Description |
 |---|---|---|
-| `title` | string | Page heading; also becomes the `<title>` |
-| `lead` | string | One line under the heading |
+| `title` | string | Becomes the `<title>` and the visually hidden `<h1>` |
 | `groups` | array | Groups, in the order given |
 
 ### Group fields
@@ -195,9 +194,10 @@ separate mobile stylesheet.
 `localStorage` under `rvpca-view`. Density comes from the design system's
 `.dense` values rather than a separate set of sizes.
 
-**Wallboard** — `index.html?mode=wallboard`. Larger scale, no top bar, footer or
-secondary links. Meant for a TV in a corridor; in kiosk mode the URL with the
-parameter is the whole setup.
+**Wallboard** — `index.html?mode=wallboard`. Larger scale, no buttons, footer or
+secondary links. The wordmark stays and is scaled up: since the page head was
+removed it is the only thing naming the screen. Meant for a TV in a corridor; in
+kiosk mode the URL with the parameter is the whole setup.
 
 ### Stored state
 
@@ -212,6 +212,12 @@ data, no personal data:
 The theme is restored at the top of `index.html`, before first paint, so dark-mode
 users get no flash of light. In private mode, where `localStorage` throws, both
 toggles still work — the choice just is not remembered.
+
+There is no separate page head with a large title. The top bar already names the
+launchpad, so the repetition only took up room. The `<h1>` is still in the
+document but `sr-only` — without it the group `<h2>`s would have no level above
+them and a screen-reader user would lose the orientation point. A test asserts
+the heading hierarchy.
 
 ## Keyboard
 

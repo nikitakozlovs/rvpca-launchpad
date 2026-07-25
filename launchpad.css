@@ -201,34 +201,9 @@ body {
 .lp-page {
   max-width: 1440px;
   margin: 0 auto;
-  padding: var(--sp-6) var(--sp-5) var(--sp-9);
-}
-
-.lp-page__head {
-  position: relative;
-  padding: var(--sp-6) 0 var(--sp-7);
-  margin-bottom: var(--sp-6);
-  border-bottom: 1px solid var(--line);
-}
-
-.lp-page__title {
-  position: relative;
-  margin: 0 0 var(--sp-3);
-  font-family: var(--font-display);
-  font-weight: 600;
-  /* Plūstošs izmērs starp esošajām skalas pakāpēm — jaunas
-     tipogrāfijas vērtības netiek ieviestas. */
-  font-size: clamp(var(--fs-xl), 5vw, var(--fs-3xl));
-  line-height: var(--lh-tight);
-  letter-spacing: var(--tracking-tight);
-}
-
-.lp-page__lead {
-  position: relative;
-  margin: 0;
-  max-width: 60ch;
-  color: var(--fg-muted);
-  font-size: var(--d-text-body);
+  /* Augšējā atstarpe agrāk nāca no lapas galvas; tā ir noņemta, tāpēc
+     atstarpe ir šeit. */
+  padding: var(--sp-8) var(--sp-5) var(--sp-9);
 }
 
 /* ---------- bento režģis ---------- */
@@ -772,14 +747,22 @@ body {
   --d-text-meta:   16px;
   --d-line-h-body: 1.65;
 }
-.lp-wallboard .lp-topbar,
 .lp-wallboard .lp-footer,
 .lp-wallboard .lp-tile__links,
+.lp-wallboard .lp-topbar__tools,
 .lp-wallboard .lp-skip-link { display: none; }
 
-.lp-wallboard .lp-page { max-width: none; padding: var(--sp-7) var(--sp-7) var(--sp-8); }
-.lp-wallboard .lp-page__title { font-size: clamp(var(--fs-2xl), 6vw, var(--fs-4xl)); }
-.lp-wallboard .lp-page__lead { font-size: var(--fs-lg); max-width: none; }
+/* Josla paliek, bet bez pogām: kad lapas galva ir noņemta, vārdzīme ir
+   vienīgais, kas nosauc ekrānu. Televizoram gaitenī tas ir svarīgi. */
+.lp-wallboard .lp-topbar { position: static; }
+.lp-wallboard .lp-topbar__inner {
+  max-width: none;
+  padding: var(--sp-6) var(--sp-7) 0;
+}
+.lp-wallboard .lp-wordmark__mark { width: 44px; height: 44px; }
+.lp-wallboard .lp-wordmark__text { font-size: clamp(var(--fs-xl), 4vw, var(--fs-3xl)); }
+
+.lp-wallboard .lp-page { max-width: none; padding: var(--sp-6) var(--sp-7) var(--sp-8); }
 .lp-wallboard .lp-group__title { font-size: clamp(var(--fs-lg), 3vw, var(--fs-2xl)); }
 .lp-wallboard .lp-tile__title { font-size: clamp(var(--fs-md), 2.4vw, var(--fs-xl)); }
 .lp-wallboard .lp-tile__mark,
@@ -803,7 +786,7 @@ body {
   .lp-tile--sm { grid-column: span 3; }
   .lp-tile--md,
   .lp-tile--lg { grid-column: span 6; }
-  .lp-page { padding: var(--sp-5) var(--sp-4) var(--sp-8); }
+  .lp-page { padding: var(--sp-6) var(--sp-4) var(--sp-8); }
   .lp-topbar__inner { padding: var(--sp-2) var(--sp-4); }
 }
 

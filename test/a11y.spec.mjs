@@ -60,6 +60,18 @@ test.describe('Pieejamība', () => {
     await expect(page.getByLabel('Pieprasīt piekļuvi: Starts')).toHaveCount(1);
   });
 
+  test('virsrakstu hierarhija ir nepārtraukta', async ({ page }) => {
+    await page.goto('/index.html');
+    const levels = await page.locator('h1, h2, h3').evaluateAll(
+      els => els.map(e => Number(e.tagName[1])));
+
+    expect(levels[0], 'lapai jāsākas ar h1').toBe(1);
+    /* Neviens līmenis netiek pārlēkts — h1 → h3 bez h2 ir kļūda. */
+    for (let i = 1; i < levels.length; i++) {
+      expect(levels[i] - levels[i - 1]).toBeLessThanOrEqual(1);
+    }
+  });
+
   test('fokusa gredzens ir redzams uz flīzes', async ({ page }) => {
     await page.goto('/index.html');
     const outline = await page.locator('a.lp-tile__link').first().evaluate(el => {

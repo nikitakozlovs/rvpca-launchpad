@@ -355,11 +355,9 @@
     }
 
     if (text(config.title)) {
+      /* Virsraksts ir dokumentā, bet vizuāli slēpts — sk. index.html. */
       document.getElementById('page-title').textContent = config.title;
       document.title = config.title;
-    }
-    if (text(config.lead)) {
-      document.getElementById('page-lead').textContent = config.lead;
     }
 
     var drawn = 0;

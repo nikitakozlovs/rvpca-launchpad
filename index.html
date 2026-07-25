@@ -76,10 +76,11 @@
 </header>
 
 <main class="lp-page">
-  <div class="lp-page__head">
-    <h1 class="lp-page__title" id="page-title">Rīgas darbvirsma</h1>
-    <p class="lp-page__lead" id="page-lead">Rīgas valstspilsētas pašvaldības iekšējās lietotnes.</p>
-  </div>
+  <!-- Virsraksts paliek dokumentā, bet nav redzams: augšējā josla jau
+       nosauc darbvirsmu, un liels atkārtojums lapā nav vajadzīgs. Bez h1
+       grupu <h2> paliktu bez virslīmeņa, un ekrānlasītāja lietotājs
+       zaudētu orientieri. -->
+  <h1 class="sr-only" id="page-title">RVP CA darbvirsma</h1>
 
   <div id="board" class="lp-board" tabindex="-1"></div>
 

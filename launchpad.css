@@ -1,0 +1,558 @@
+/* ============================================================
+   RĪGAS DARBVIRSMA — LAPAS STILI
+   launchpad.css
+
+   Viss krāsu, tipogrāfijas, atstarpju, rādiusu un kustības ziņā
+   nāk no brand/colors_and_type.css. Šeit ir tikai tas, ko marku
+   sistēma nedod: bento režģis, flīzes un lapas hroms.
+
+   Zīmola noteikumi, ko šis fails ievēro (README.md → Visual
+   foundations):
+     · asi rādiusi — --r-2 (4px), --r-3 (8px) lielākajiem paneļiem
+     · kartes ir ar apmali, nevis ēnu; ēnas tikai peldošai saskarnei
+     · 1px matlīnijas uz var(--line)
+     · plakani laukumi, nekādu gradientu uz hroma
+     · hover: apmale kļūst dziļāka + 2px pacēlums, nekad caurspīdība
+     · fokuss: 2px --rudzupuku-zilais, offset 2px, nekad nenoņemts
+   ============================================================ */
+
+/* ---------- pamatne ---------- */
+
+html {
+  background: var(--bg);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: var(--d-text-body);
+  line-height: var(--d-line-h-body);
+  transition: background var(--dur-base) var(--ease-out),
+              color var(--dur-base) var(--ease-out);
+}
+
+/* Blīvums kā responsīvais slēdzis. Dizaina sistēma piedāvā trīs
+   blīvuma tvērumus — lieto tos, nevis atsevišķu mobilo CSS.
+   `.airy` ir paredzēts sākumlapām un lielekrāniem; zem 1024px tas
+   izšķiež vietu, tāpēc atgriežamies pie noklusējuma. Katrs
+   komponents, kas lasa --d-*, seko automātiski. */
+@media (min-width: 1024px) {
+  body { /* .airy vērtības no colors_and_type.css */
+    --d-card-pad:    32px;
+    --d-card-radius: var(--r-3);
+    --d-section-gap: 32px;
+    --d-control-h:   40px;
+    --d-control-pad-x: 18px;
+    --d-text-body:   16px;
+    --d-text-meta:   13px;
+    --d-line-h-body: 1.65;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* Fokusa gredzens — nekad nenoņemts. */
+:focus-visible {
+  outline: 2px solid var(--rudzupuku-zilais);
+  outline-offset: 2px;
+}
+.dark :focus-visible { outline-color: var(--accent); }
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--sp-4);
+  top: -100px;
+  z-index: 60;
+  background: var(--bg-alt);
+  color: var(--fg);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-2);
+  padding: var(--sp-3) var(--sp-4);
+  font-size: var(--fs-sm);
+  text-decoration: none;
+  transition: top var(--dur-quick) var(--ease-out);
+}
+.skip-link:focus { top: var(--sp-3); }
+
+/* ---------- augšējā josla ---------- */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background var(--dur-base) var(--ease-out),
+              border-color var(--dur-base) var(--ease-out);
+}
+
+/* Matēts stikls tikai ritinot — līdz tam josla ir caurspīdīga. */
+.topbar.is-stuck {
+  background: rgba(244, 237, 226, 0.86);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom-color: var(--line);
+}
+.dark .topbar.is-stuck { background: rgba(0, 11, 64, 0.86); }
+
+.topbar__inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  min-height: 56px;
+  padding: var(--sp-2) var(--sp-5);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+  text-decoration: none;
+  color: var(--fg);
+  border-radius: var(--r-2);
+  flex: 0 1 auto;
+  min-width: 0;
+}
+/* Krustotās atslēgas kā vārdzīme. Tonēta ar mask-image, nevis <img>,
+   lai zīme sekotu teksta krāsai un nepazustu tumšajā režīmā. */
+.wordmark__mark {
+  width: 28px;
+  height: 28px;
+  flex: none;
+  background-color: currentColor;
+  -webkit-mask-image: url('brand/assets/riga-keys.svg');
+  mask-image: url('brand/assets/riga-keys.svg');
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+.wordmark__text {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-md);
+  letter-spacing: var(--tracking-tight);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.topbar__tools {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+/* ---------- filtrs ---------- */
+
+.filter {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+.filter__icon,
+.filter__hint {
+  position: absolute;
+  pointer-events: none;
+  color: var(--fg-subtle);
+}
+.filter__icon { left: var(--sp-3); font-size: 14px; }
+.filter__hint {
+  right: var(--sp-3);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-1);
+  padding: 1px 5px;
+  line-height: 1.4;
+}
+.filter__input {
+  width: 240px;
+  max-width: 100%;
+  height: var(--d-control-h);
+  min-height: 32px;
+  padding: 0 var(--sp-7) 0 var(--sp-6);
+  font-family: var(--font-body);
+  font-size: var(--d-text-meta);
+  color: var(--fg);
+  background: var(--bg-alt);
+  border: 1px solid var(--line);
+  border-radius: var(--r-2);
+  transition: border-color var(--dur-quick) var(--ease-out);
+}
+.filter__input::placeholder { color: var(--fg-subtle); }
+.filter__input:hover { border-color: var(--line-strong); }
+.filter__input:focus { outline: 2px solid var(--rudzupuku-zilais); outline-offset: 2px; }
+.filter__input:not(:placeholder-shown) ~ .filter__hint { opacity: 0; }
+/* Slēpj pārlūka pašu "notīrīt" krustiņu — mums ir Esc. */
+.filter__input::-webkit-search-cancel-button { -webkit-appearance: none; }
+
+.icon-button {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--d-control-h);
+  height: var(--d-control-h);
+  min-width: 32px;
+  min-height: 32px;
+  color: var(--fg-muted);
+  background: var(--bg-alt);
+  border: 1px solid var(--line);
+  border-radius: var(--r-2);
+  cursor: pointer;
+  transition: border-color var(--dur-quick) var(--ease-out),
+              color var(--dur-quick) var(--ease-out);
+}
+.icon-button:active { transform: scale(0.98); }
+
+/* ---------- lapas galva ---------- */
+
+.page {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: var(--sp-6) var(--sp-5) var(--sp-9);
+}
+
+.page__head {
+  position: relative;
+  padding: var(--sp-6) 0 var(--sp-7);
+  margin-bottom: var(--sp-6);
+  border-bottom: 1px solid var(--line);
+}
+
+/* Tautiskā raksta faktūra — atvērtais variants zīmola noteiktajā
+   0.08–0.18 necaurspīdībā. Tikai aiz galvas; hroms paliek plakans. */
+.page__texture {
+  position: absolute;
+  inset: 0 0 1px auto;
+  width: min(420px, 45%);
+  pointer-events: none;
+  opacity: 0.08;
+  background-color: var(--fg);
+  -webkit-mask-image: url('brand/assets/patterns/riga-deconstruct-3.svg');
+  mask-image: url('brand/assets/patterns/riga-deconstruct-3.svg');
+  -webkit-mask-size: 72px 72px;
+  mask-size: 72px 72px;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+  -webkit-mask-position: top right;
+  mask-position: top right;
+}
+
+.page__title {
+  position: relative;
+  margin: 0 0 var(--sp-3);
+  font-family: var(--font-display);
+  font-weight: 600;
+  /* Plūstošs izmērs starp esošajām skalas pakāpēm — jaunas
+     tipogrāfijas vērtības netiek ieviestas. */
+  font-size: clamp(var(--fs-xl), 5vw, var(--fs-3xl));
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+}
+
+.page__lead {
+  position: relative;
+  margin: 0;
+  max-width: 60ch;
+  color: var(--fg-muted);
+  font-size: var(--d-text-body);
+}
+
+/* ---------- bento režģis ---------- */
+
+/* Ārējais režģis: 12 kolonnas. Grupas aizņem 4 / 6 / 12.
+   Iekšējais režģis vienmēr 6 kolonnas neatkarīgi no grupas
+   platuma, tāpēc flīžu izmēri ir paredzami: sm=2, md=3, lg=6. */
+.board {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--sp-7) var(--sp-5);
+}
+.board:focus { outline: none; }
+
+.group {
+  grid-column: span var(--group-span, 6);
+  min-width: 0;
+}
+
+.group__head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-5);
+}
+
+/* Zīmola atslēgas glifs kā sadaļas enkurs — tikai ornaments,
+   nekad funkcionāla ikona. Tonēts ar mask-image, kā KeyGlyph.jsx. */
+.group__glyph {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  background-color: var(--accent);
+  opacity: 0.55;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+.group__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(var(--fs-md), 2.2vw, var(--fs-lg));
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-tight);
+}
+
+.group__count {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--d-text-meta);
+  color: var(--fg-subtle);
+}
+
+.group__grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--sp-4);
+  /* Blīvā plūsma aizpilda caurumus, ko atstāj dažādie flīžu
+     izmēri — siena paliek sablīvēta, nevis robaina. */
+  grid-auto-flow: dense;
+}
+
+.tile {
+  grid-column: span var(--tile-span, 3);
+  min-width: 0;
+}
+
+/* ---------- flīze ---------- */
+
+/* Karte: balts laukums, 1px apmale, bez ēnas. */
+.tile__inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  height: 100%;
+  min-height: 44px;
+  padding: var(--d-card-pad);
+  background: var(--bg-alt);
+  border: 1px solid var(--line);
+  border-radius: var(--d-card-radius);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color var(--dur-base) var(--ease-out),
+              transform var(--dur-base) var(--ease-out);
+}
+
+/* Hover tikai tur, kur tas tiešām ir — citādi skārienekrānos
+   flīzes paliek "iestrēgušas" hover stāvoklī. */
+@media (hover: hover) {
+  .tile__inner[href]:hover {
+    border-color: var(--line-strong);
+    transform: translateY(-2px);
+  }
+  .icon-button:hover { border-color: var(--line-strong); color: var(--fg); }
+}
+
+.tile__mark {
+  width: 48px;
+  height: 48px;
+  flex: none;
+}
+
+/* Plakanā monogramma — dizaina sistēmas otrais monogrammu režīms.
+   Toņi nāk no piecām definētajām toņu saimēm. */
+.tile__mono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex: none;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 19px;
+  letter-spacing: var(--tracking-tight);
+  background: var(--mono-fill, var(--smilsu-pelekais));
+  color: var(--mono-ink, var(--balta));
+  border-radius: var(--r-2);
+  /* Matlīnija notur malu redzamu arī tad, kad saimes tonis sakrīt
+     ar virsmu — piem. "Alt Blue" (#000B40) tumšajā režīmā. */
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+.tile__body { display: flex; flex-direction: column; gap: 2px; }
+
+.tile__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(var(--fs-base), 1.6vw, var(--fs-md));
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-tight);
+}
+
+.tile__desc {
+  color: var(--fg-muted);
+  font-size: var(--d-text-meta);
+  line-height: var(--lh-body);
+}
+
+.tile__foot { margin-top: auto; padding-top: var(--sp-2); }
+
+/* Izmērs nes nozīmi: lielākā flīze saņem lielāku marķējumu un
+   virsrakstu, nevis tikai vairāk tukšuma. */
+.tile--sm .tile__mark,
+.tile--sm .tile__mono { width: 40px; height: 40px; }
+.tile--sm .tile__mono { font-size: 16px; }
+.tile--sm .tile__title { font-size: var(--fs-base); }
+
+/* Platā flīze liek marķējumu blakus tekstam, lai platums tiktu
+   izmantots, nevis izstiepts tukšumā. */
+@media (min-width: 768px) {
+  .tile--lg .tile__inner {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: 'mark body' 'foot foot';
+    align-content: start;
+    column-gap: var(--sp-5);
+  }
+  .tile--lg .tile__mark,
+  .tile--lg .tile__mono { grid-area: mark; width: 64px; height: 64px; }
+  .tile--lg .tile__mono { font-size: 25px; }
+  .tile--lg .tile__body { grid-area: body; align-self: center; }
+  .tile--lg .tile__foot { grid-area: foot; }
+  .tile--lg .tile__title { font-size: clamp(var(--fs-md), 2vw, var(--fs-lg)); }
+}
+
+/* Statusa nozīmīte — vienīgā vieta, kur zīmols atļauj pilnu
+   noapaļojumu. Versāls ar 0.14em atstarpi. */
+.pill {
+  display: inline-block;
+  padding: 3px var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background: var(--bg);
+  color: var(--fg-muted);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-mega);
+  white-space: nowrap;
+}
+
+/* ---------- izstrādes stāvoklis ---------- */
+
+/* Redzama, bet nepalaižama flīze. Nav <a>, nav href — tātad nav
+   arī tukša klikšķa. Fokusējama un nolasāma, tikai ne aktivizējama. */
+.tile--izstrade .tile__inner {
+  background: var(--bg);
+  border-style: dashed;
+  cursor: default;
+}
+.tile--izstrade .tile__title { color: var(--fg-muted); }
+.tile--izstrade .tile__desc { color: var(--fg-subtle); }
+.tile--izstrade .tile__mono {
+  background: var(--smilsu-pelekais);
+  color: var(--bg-alt);
+}
+
+/* ---------- tukšs rezultāts ---------- */
+
+.empty {
+  margin: var(--sp-8) 0 0;
+  text-align: center;
+  color: var(--fg-muted);
+  font-size: var(--d-text-body);
+}
+
+/* ============================================================
+   RESPONSĪVIE PĀRTRAUKUMI
+   Grupu un flīžu laidumi tiek ierobežoti, nevis pārplūst.
+   ============================================================ */
+
+/* Planšete: viss vienā 6 kolonnu režģī — grupas pilnā platumā. */
+@media (max-width: 1199px) {
+  .board { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .group { grid-column: span 6; }
+}
+
+/* Mazā planšete / lielais tālrunis: flīzes kļūst platākas. */
+@media (max-width: 767px) {
+  .tile--sm { grid-column: span 3; }
+  .tile--md,
+  .tile--lg { grid-column: span 6; }
+  .page { padding: var(--sp-5) var(--sp-4) var(--sp-8); }
+  .topbar__inner { padding: var(--sp-2) var(--sp-4); }
+}
+
+/* Tālrunis: viena kolonna. Filtrs pārceļas zem joslas, lai
+   nekonkurētu par vietu ar vārdzīmi. */
+@media (max-width: 559px) {
+  .board { grid-template-columns: minmax(0, 1fr); gap: var(--sp-6); }
+  .group__grid { grid-template-columns: minmax(0, 1fr); }
+  .group { grid-column: span 1; }
+  .tile,
+  .tile--sm,
+  .tile--md,
+  .tile--lg { grid-column: span 1; }
+
+  .topbar__inner { flex-wrap: wrap; row-gap: var(--sp-2); }
+  .topbar__tools { width: 100%; margin-left: 0; }
+  .filter { flex: 1 1 auto; }
+  .filter__input { width: 100%; }
+  .wordmark__text { font-size: var(--fs-base); }
+  .page__texture { display: none; }
+}
+
+/* Skārienierīces: 44px minimālais pieskāriena mērķis. Zīmola
+   --d-control-h ir 32px, kas der pelei, bet ne īkšķim. */
+@media (pointer: coarse) {
+  .filter__input,
+  .icon-button {
+    min-height: 44px;
+  }
+  .icon-button { min-width: 44px; }
+}
+
+/* Samazināta kustība: nost ar pacēlumiem un pārejām. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .tile__inner[href]:hover { transform: none; }
+  .icon-button:active { transform: none; }
+}
+
+/* Drukā: bez hroma, viss redzams. */
+@media print {
+  .topbar, .skip-link, .page__texture { display: none; }
+  .tile__inner { border-color: #999; }
+}

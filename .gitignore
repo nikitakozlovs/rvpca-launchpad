@@ -1,0 +1,6 @@
+# Šis projekts strādā bez atkarībām un bez būvēšanas soļa.
+# Šie ir tikai lokālas pārbaudes artefakti.
+node_modules/
+package.json
+package-lock.json
+.verify-index.html

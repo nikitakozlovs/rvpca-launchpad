@@ -1,5 +1,5 @@
 /* ============================================================
-   RĪGAS DARBVIRSMA — ATTĒLOŠANA
+   RVP CA DARBVIRSMA — ATTĒLOŠANA
    app.js
 
    Nolasa window.RVPCA_LAUNCHPAD un uzbūvē bento sienu. Bez
@@ -74,12 +74,12 @@
     var size        = TILE_SPAN[app.size] ? app.size : 'md';
     var launchable  = !inDev && url !== '';
 
-    var tile = el('div', 'tile tile--' + size + (inDev ? ' tile--izstrade' : ''));
+    var tile = el('div', 'lp-tile lp-tile--' + size + (inDev ? ' lp-tile--izstrade' : ''));
     tile.style.setProperty('--tile-span', TILE_SPAN[size]);
 
     /* Palaižama flīze ir īsta saite. Izstrādē esoša nav <a> vispār,
        lai nepaliktu tukšs klikšķis — bet paliek fokusējama. */
-    var inner = el(launchable ? 'a' : 'div', 'tile__inner');
+    var inner = el(launchable ? 'a' : 'div', 'lp-tile__inner');
     if (launchable) {
       inner.href = url;
     } else {
@@ -91,7 +91,7 @@
     /* Marķējums: zīmēts produkta marķējums vai plakana monogramma. */
     var mark = text(inDev && app.markMuted ? app.markMuted : app.mark);
     if (mark) {
-      var img = el('img', 'tile__mark');
+      var img = el('img', 'lp-tile__mark');
       img.src = mark;
       img.alt = '';
       img.width = 48;
@@ -100,7 +100,7 @@
       inner.appendChild(img);
     } else {
       var family = FAMILIES[app.family];
-      var mono = el('div', 'tile__mono');
+      var mono = el('div', 'lp-tile__mono');
       mono.setAttribute('aria-hidden', 'true');
       mono.textContent = text(app.mono) || deriveMono(title);
       if (family && !inDev) {
@@ -110,13 +110,13 @@
       inner.appendChild(mono);
     }
 
-    var body = el('div', 'tile__body');
-    var heading = el('div', 'tile__title');
+    var body = el('div', 'lp-tile__body');
+    var heading = el('div', 'lp-tile__title');
     heading.textContent = title;
     body.appendChild(heading);
 
     if (desc) {
-      var lead = el('div', 'tile__desc');
+      var lead = el('div', 'lp-tile__desc');
       lead.textContent = desc;
       body.appendChild(lead);
     }
@@ -124,8 +124,8 @@
 
     if (inDev) {
       var pillId = 'status-' + (text(app.id) || fold(title).replace(/\W+/g, '-'));
-      var foot = el('div', 'tile__foot');
-      var pill = el('span', 'pill');
+      var foot = el('div', 'lp-tile__foot');
+      var pill = el('span', 'lp-pill');
       pill.id = pillId;
       pill.textContent = 'Izstrādē';
       foot.appendChild(pill);
@@ -149,30 +149,30 @@
     if (!tiles.length) return null;
 
     var span = GROUP_SPAN[group.span] || GROUP_SPAN.wide;
-    var section = el('section', 'group');
+    var section = el('section', 'lp-group');
     section.style.setProperty('--group-span', span);
 
-    var head = el('div', 'group__head');
+    var head = el('div', 'lp-group__head');
     /* Funkcionālās ikonas nāk no Font Awesome Pro Light — atslēgu
        glifi paliek tikai ornamentam, kā to nosaka zīmola vadlīnijas. */
     var icon = text(group.icon);
     if (icon) {
-      var mark = el('i', 'fa-light ' + (icon.indexOf('fa-') === 0 ? icon : 'fa-' + icon) + ' group__icon');
+      var mark = el('i', 'fa-light ' + (icon.indexOf('fa-') === 0 ? icon : 'fa-' + icon) + ' lp-group__icon');
       mark.setAttribute('aria-hidden', 'true');
       head.appendChild(mark);
     }
 
-    var heading = el('h2', 'group__title');
+    var heading = el('h2', 'lp-group__title');
     heading.textContent = text(group.title) || 'Bez nosaukuma';
     head.appendChild(heading);
 
-    var count = el('span', 'group__count');
+    var count = el('span', 'lp-group__count');
     count.textContent = String(tiles.length);
     head.appendChild(count);
 
     section.appendChild(head);
 
-    var grid = el('div', 'group__grid');
+    var grid = el('div', 'lp-group__grid');
     tiles.forEach(function (tile) { grid.appendChild(tile); });
     section.appendChild(grid);
 
@@ -209,23 +209,23 @@
     var query = fold(input.value.trim());
     var visible = 0;
 
-    board.querySelectorAll('.group').forEach(function (group) {
+    board.querySelectorAll('.lp-group').forEach(function (group) {
       var shown = 0;
 
-      group.querySelectorAll('.tile').forEach(function (tile) {
+      group.querySelectorAll('.lp-tile').forEach(function (tile) {
         var match = !query || tile.dataset.haystack.indexOf(query) !== -1;
         tile.hidden = !match;
         if (match) shown++;
       });
 
       group.hidden = shown === 0;
-      group.querySelector('.group__count').textContent = String(shown);
+      group.querySelector('.lp-group__count').textContent = String(shown);
       visible += shown;
     });
 
     empty.hidden = visible !== 0;
     status.textContent = query
-      ? visible + ' no ' + board.querySelectorAll('.tile').length
+      ? visible + ' no ' + board.querySelectorAll('.lp-tile').length
       : '';
   }
 
@@ -272,7 +272,7 @@
 
   /* Matētais stikls tikai tad, kad lapa ir aizritināta. */
   var onScroll = function () {
-    topbar.classList.toggle('is-stuck', window.scrollY > 8);
+    topbar.classList.toggle('lp-is-stuck', window.scrollY > 8);
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();

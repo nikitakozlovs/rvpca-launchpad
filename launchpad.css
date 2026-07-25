@@ -1,10 +1,10 @@
 /* ============================================================
-   RĪGAS DARBVIRSMA — LAPAS STILI
+   RVP CA DARBVIRSMA — LAPAS STILI
    launchpad.css
 
    Viss krāsu, tipogrāfijas, atstarpju, rādiusu un kustības ziņā
    nāk no brand/colors_and_type.css. Šeit ir tikai tas, ko marku
-   sistēma nedod: bento režģis, flīzes un lapas hroms.
+   sistēma nedod: bento režģis, flīzes, kājene un lapas hroms.
 
    Zīmola noteikumi, ko šis fails ievēro (README.md → Visual
    foundations):
@@ -71,7 +71,7 @@ body {
   border: 0;
 }
 
-.skip-link {
+.lp-skip-link {
   position: absolute;
   left: var(--sp-4);
   top: -100px;
@@ -85,11 +85,11 @@ body {
   text-decoration: none;
   transition: top var(--dur-quick) var(--ease-out);
 }
-.skip-link:focus { top: var(--sp-3); }
+.lp-skip-link:focus { top: var(--sp-3); }
 
 /* ---------- augšējā josla ---------- */
 
-.topbar {
+.lp-topbar {
   position: sticky;
   top: 0;
   z-index: 50;
@@ -100,15 +100,15 @@ body {
 }
 
 /* Matēts stikls tikai ritinot — līdz tam josla ir caurspīdīga. */
-.topbar.is-stuck {
+.lp-topbar.lp-is-stuck {
   background: rgba(244, 237, 226, 0.86);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom-color: var(--line);
 }
-.dark .topbar.is-stuck { background: rgba(0, 11, 64, 0.86); }
+.dark .lp-topbar.lp-is-stuck { background: rgba(0, 11, 64, 0.86); }
 
-.topbar__inner {
+.lp-topbar__inner {
   max-width: 1440px;
   margin: 0 auto;
   min-height: 56px;
@@ -118,7 +118,7 @@ body {
   gap: var(--sp-4);
 }
 
-.wordmark {
+.lp-wordmark {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-3);
@@ -129,14 +129,22 @@ body {
   min-width: 0;
 }
 /* Krustotās atslēgas kā vārdzīme. Tonēta ar mask-image, nevis <img>,
-   lai zīme sekotu teksta krāsai un nepazustu tumšajā režīmā. */
-.wordmark__mark {
+   lai zīme sekotu teksta krāsai un nepazustu tumšajā režīmā.
+
+   Zīmējums iekļauts kā data: URI (avots: brand/assets/riga-keys.svg).
+   Chromium bloķē mask-image no file:// kā svešas izcelsmes resursu, un
+   tad vārdzīme klusi pazustu; iekļauta tā strādā abos protokolos un
+   nemaksā papildu pieprasījumu. SVG pēdiņas ir kodētas kā %22 — neaizstāj
+   tās ar īstām pēdiņām, citādi url("...") aizveras par agru un maska
+   nenostrādā (elements tad kļūst par vienlaidu krāsas laukumu).
+   Ja zīmols atjaunina glifu, šī vērtība jāģenerē no jauna. */
+.lp-wordmark__mark {
   width: 28px;
   height: 28px;
   flex: none;
   background-color: currentColor;
-  -webkit-mask-image: url('brand/assets/riga-keys.svg');
-  mask-image: url('brand/assets/riga-keys.svg');
+  -webkit-mask-image: url("data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 640 640%22><path d=%22M216.3 449.7L215.4 450.1C204.6 455.6 163.1 457.8 134 450.4L134 450.4C141.4 479.4 139.1 520.7 133.6 531.5L133.2 532.3L134 531.9C144.8 526.4 186.3 524.2 215.4 531.6L215.4 531.6C208 502.6 210.3 461.3 215.7 450.5zM472.3 422.9C462.4 423.4 451.4 428.5 444.8 448.4C444.5 448.1 445 469.3 445 469.3L444.8 469.5C444.8 469.5 423.6 469 423.9 469.3C397.9 477.8 397.3 494 398.9 505.5C400.5 517 417 534.8 433.1 528.5C449.2 522.2 457.1 517 457.1 517C457.1 517 461.9 524.7 467.9 534.1C473.9 543.5 493.9 557.1 513.1 537.9L513.3 537.7C532.5 518.5 518.9 498.6 509.5 492.5C500.1 486.4 492.4 481.7 492.4 481.7C492.4 481.7 497.7 473.8 503.9 457.7C510.1 441.6 492.4 425.2 480.9 423.5C479.5 423.3 478 423.1 476.4 423C475 422.9 473.6 422.9 472.2 423zM193.4 238.4L172.8 259L193.1 279.3L213.7 258.7zM153 198L132.4 218.6L152.7 238.9L173.3 218.3zM132.5 136L321.5 325L508.8 137.7L528.4 157.3L507.9 177.8L585.6 255.5L545.3 295.8L511.8 262.3L533 243.2L512.4 222.6L493.3 243.8L467.6 218.1L447.1 238.6L472.8 264.3L451.6 283.4L472.2 304L491.3 282.8L524.8 316.3L484.5 356.6L406.8 278.9L341.1 344.6L426.2 429.6C426.2 429.6 437.9 391.6 475.7 394.3C513.5 397 524.2 418.5 529.8 435.5C535.4 452.5 523.2 473.3 523.2 473.3C562.1 494.8 556.7 535.4 534 558.1L533.8 558.3C511.1 581 470.5 586.4 449 547.5C449 547.5 428.3 559.7 411.2 554.1C394.1 548.5 372.6 537.8 370 500C367.4 462.2 405.3 450.5 405.3 450.5L405.5 450.5L320.4 365.4L255.6 430.2C242.8 446.7 240.2 468.4 240 489.3C239.8 515.3 244.7 539.9 254.2 550.8L234.6 570.4L234.5 570.2L234.4 570.3C223.5 560.8 198.9 555.9 172.9 556.1C152 556.3 131.8 557.4 115.3 570.2L115.3 570.2L115.3 570.2C108.8 563.7 102.3 557.2 95.7 550.6L95.7 550.6C108.5 534.1 109.7 513.8 109.8 493C110 467 105.1 442.4 95.6 431.5L115.2 411.9L115.3 412.1L115.4 412C126.3 421.5 150.9 426.4 176.9 426.2C197.8 426 219.5 423.4 236 410.6L300.8 345.8L234.2 279.2L193.8 319.6L171.6 297.4L151.4 317.6L171.8 338L151.6 358.2L110.9 317.5L151.3 277.1L134.7 260.5L94.3 300.9L53.6 260.2L73.8 240L94.2 260.4L114.4 240.2L92.2 218L132.6 177.6L111.8 156.8zM302.6 64L338.5 64L334.1 123.7L393.8 119.3L393.8 155.2L334.1 150.8L338.5 210.5L302.6 210.5L307 150.8L247.3 155.2L247.3 119.3L307 123.7z%22></path></svg>");
+  mask-image: url("data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 640 640%22><path d=%22M216.3 449.7L215.4 450.1C204.6 455.6 163.1 457.8 134 450.4L134 450.4C141.4 479.4 139.1 520.7 133.6 531.5L133.2 532.3L134 531.9C144.8 526.4 186.3 524.2 215.4 531.6L215.4 531.6C208 502.6 210.3 461.3 215.7 450.5zM472.3 422.9C462.4 423.4 451.4 428.5 444.8 448.4C444.5 448.1 445 469.3 445 469.3L444.8 469.5C444.8 469.5 423.6 469 423.9 469.3C397.9 477.8 397.3 494 398.9 505.5C400.5 517 417 534.8 433.1 528.5C449.2 522.2 457.1 517 457.1 517C457.1 517 461.9 524.7 467.9 534.1C473.9 543.5 493.9 557.1 513.1 537.9L513.3 537.7C532.5 518.5 518.9 498.6 509.5 492.5C500.1 486.4 492.4 481.7 492.4 481.7C492.4 481.7 497.7 473.8 503.9 457.7C510.1 441.6 492.4 425.2 480.9 423.5C479.5 423.3 478 423.1 476.4 423C475 422.9 473.6 422.9 472.2 423zM193.4 238.4L172.8 259L193.1 279.3L213.7 258.7zM153 198L132.4 218.6L152.7 238.9L173.3 218.3zM132.5 136L321.5 325L508.8 137.7L528.4 157.3L507.9 177.8L585.6 255.5L545.3 295.8L511.8 262.3L533 243.2L512.4 222.6L493.3 243.8L467.6 218.1L447.1 238.6L472.8 264.3L451.6 283.4L472.2 304L491.3 282.8L524.8 316.3L484.5 356.6L406.8 278.9L341.1 344.6L426.2 429.6C426.2 429.6 437.9 391.6 475.7 394.3C513.5 397 524.2 418.5 529.8 435.5C535.4 452.5 523.2 473.3 523.2 473.3C562.1 494.8 556.7 535.4 534 558.1L533.8 558.3C511.1 581 470.5 586.4 449 547.5C449 547.5 428.3 559.7 411.2 554.1C394.1 548.5 372.6 537.8 370 500C367.4 462.2 405.3 450.5 405.3 450.5L405.5 450.5L320.4 365.4L255.6 430.2C242.8 446.7 240.2 468.4 240 489.3C239.8 515.3 244.7 539.9 254.2 550.8L234.6 570.4L234.5 570.2L234.4 570.3C223.5 560.8 198.9 555.9 172.9 556.1C152 556.3 131.8 557.4 115.3 570.2L115.3 570.2L115.3 570.2C108.8 563.7 102.3 557.2 95.7 550.6L95.7 550.6C108.5 534.1 109.7 513.8 109.8 493C110 467 105.1 442.4 95.6 431.5L115.2 411.9L115.3 412.1L115.4 412C126.3 421.5 150.9 426.4 176.9 426.2C197.8 426 219.5 423.4 236 410.6L300.8 345.8L234.2 279.2L193.8 319.6L171.6 297.4L151.4 317.6L171.8 338L151.6 358.2L110.9 317.5L151.3 277.1L134.7 260.5L94.3 300.9L53.6 260.2L73.8 240L94.2 260.4L114.4 240.2L92.2 218L132.6 177.6L111.8 156.8zM302.6 64L338.5 64L334.1 123.7L393.8 119.3L393.8 155.2L334.1 150.8L338.5 210.5L302.6 210.5L307 150.8L247.3 155.2L247.3 119.3L307 123.7z%22></path></svg>");
   -webkit-mask-size: contain;
   mask-size: contain;
   -webkit-mask-repeat: no-repeat;
@@ -144,7 +152,14 @@ body {
   -webkit-mask-position: center;
   mask-position: center;
 }
-.wordmark__text {
+/* "CA" patur paskaidrojošo title tekstu, bet bez punktotās pasvītras —
+   vārdzīmē tā izskatās pēc kļūdas, nevis pēc apzīmējuma. */
+.lp-wordmark__text abbr {
+  text-decoration: none;
+  cursor: inherit;
+}
+
+.lp-wordmark__text {
   font-family: var(--font-display);
   font-weight: 600;
   font-size: var(--fs-md);
@@ -154,7 +169,7 @@ body {
   text-overflow: ellipsis;
 }
 
-.topbar__tools {
+.lp-topbar__tools {
   margin-left: auto;
   display: flex;
   align-items: center;
@@ -164,20 +179,20 @@ body {
 
 /* ---------- filtrs ---------- */
 
-.filter {
+.lp-filter {
   position: relative;
   display: flex;
   align-items: center;
   min-width: 0;
 }
-.filter__icon,
-.filter__hint {
+.lp-filter__icon,
+.lp-filter__hint {
   position: absolute;
   pointer-events: none;
   color: var(--fg-subtle);
 }
-.filter__icon { left: var(--sp-3); font-size: 14px; }
-.filter__hint {
+.lp-filter__icon { left: var(--sp-3); font-size: 14px; }
+.lp-filter__hint {
   right: var(--sp-3);
   font-family: var(--font-mono);
   font-size: 11px;
@@ -186,7 +201,7 @@ body {
   padding: 1px 5px;
   line-height: 1.4;
 }
-.filter__input {
+.lp-filter__input {
   width: 240px;
   max-width: 100%;
   height: var(--d-control-h);
@@ -200,14 +215,14 @@ body {
   border-radius: var(--r-2);
   transition: border-color var(--dur-quick) var(--ease-out);
 }
-.filter__input::placeholder { color: var(--fg-subtle); }
-.filter__input:hover { border-color: var(--line-strong); }
-.filter__input:focus { outline: 2px solid var(--rudzupuku-zilais); outline-offset: 2px; }
-.filter__input:not(:placeholder-shown) ~ .filter__hint { opacity: 0; }
+.lp-filter__input::placeholder { color: var(--fg-subtle); }
+.lp-filter__input:hover { border-color: var(--line-strong); }
+.lp-filter__input:focus { outline: 2px solid var(--rudzupuku-zilais); outline-offset: 2px; }
+.lp-filter__input:not(:placeholder-shown) ~ .lp-filter__hint { opacity: 0; }
 /* Slēpj pārlūka pašu "notīrīt" krustiņu — mums ir Esc. */
-.filter__input::-webkit-search-cancel-button { -webkit-appearance: none; }
+.lp-filter__input::-webkit-search-cancel-button { -webkit-appearance: none; }
 
-.icon-button {
+.lp-icon-button {
   flex: none;
   display: inline-flex;
   align-items: center;
@@ -224,17 +239,17 @@ body {
   transition: border-color var(--dur-quick) var(--ease-out),
               color var(--dur-quick) var(--ease-out);
 }
-.icon-button:active { transform: scale(0.98); }
+.lp-icon-button:active { transform: scale(0.98); }
 
 /* ---------- lapas galva ---------- */
 
-.page {
+.lp-page {
   max-width: 1440px;
   margin: 0 auto;
   padding: var(--sp-6) var(--sp-5) var(--sp-9);
 }
 
-.page__head {
+.lp-page__head {
   position: relative;
   padding: var(--sp-6) 0 var(--sp-7);
   margin-bottom: var(--sp-6);
@@ -242,16 +257,18 @@ body {
 }
 
 /* Tautiskā raksta faktūra — atvērtais variants zīmola noteiktajā
-   0.08–0.18 necaurspīdībā. Tikai aiz galvas; hroms paliek plakans. */
-.page__texture {
+   0.08–0.18 necaurspīdībā. Tikai aiz galvas; hroms paliek plakans.
+   Iekļauta kā data: URI tā paša iemesla dēļ, kas vārdzīme
+   (avots: brand/assets/patterns/riga-deconstruct-3.svg). */
+.lp-page__texture {
   position: absolute;
   inset: 0 0 1px auto;
   width: min(420px, 45%);
   pointer-events: none;
   opacity: 0.08;
   background-color: var(--fg);
-  -webkit-mask-image: url('brand/assets/patterns/riga-deconstruct-3.svg');
-  mask-image: url('brand/assets/patterns/riga-deconstruct-3.svg');
+  -webkit-mask-image: url("data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%2264 64 512 512%22><path d=%22M269.9 65.3C269.9 133.5 269.9 201.7 269.9 269.9C303.3 269.9 336.7 269.9 370.2 269.9C370.2 303.3 370.2 336.8 370.2 370.2C336.8 370.2 303.4 370.2 269.9 370.2C269.9 438.4 269.9 506.6 269.9 574.8C303.3 574.8 336.7 574.8 370.2 574.8C370.2 506.6 370.2 438.4 370.2 370.2C438.3 370.2 506.5 370.2 574.6 370.2C574.6 336.8 574.6 303.3 574.6 269.9C506.5 269.9 438.3 269.9 370.2 269.9C370.2 201.7 370.2 133.5 370.2 65.3C336.8 65.3 303.4 65.3 269.9 65.3zM65.4 269.8C65.4 303.2 65.4 336.7 65.4 370.1C133.5 370.1 201.7 370.1 269.8 370.1C269.8 336.7 269.8 303.2 269.8 269.8C201.7 269.8 133.5 269.8 65.4 269.8z%22></path></svg>");
+  mask-image: url("data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%2264 64 512 512%22><path d=%22M269.9 65.3C269.9 133.5 269.9 201.7 269.9 269.9C303.3 269.9 336.7 269.9 370.2 269.9C370.2 303.3 370.2 336.8 370.2 370.2C336.8 370.2 303.4 370.2 269.9 370.2C269.9 438.4 269.9 506.6 269.9 574.8C303.3 574.8 336.7 574.8 370.2 574.8C370.2 506.6 370.2 438.4 370.2 370.2C438.3 370.2 506.5 370.2 574.6 370.2C574.6 336.8 574.6 303.3 574.6 269.9C506.5 269.9 438.3 269.9 370.2 269.9C370.2 201.7 370.2 133.5 370.2 65.3C336.8 65.3 303.4 65.3 269.9 65.3zM65.4 269.8C65.4 303.2 65.4 336.7 65.4 370.1C133.5 370.1 201.7 370.1 269.8 370.1C269.8 336.7 269.8 303.2 269.8 269.8C201.7 269.8 133.5 269.8 65.4 269.8z%22></path></svg>");
   -webkit-mask-size: 72px 72px;
   mask-size: 72px 72px;
   -webkit-mask-repeat: repeat;
@@ -260,7 +277,7 @@ body {
   mask-position: top right;
 }
 
-.page__title {
+.lp-page__title {
   position: relative;
   margin: 0 0 var(--sp-3);
   font-family: var(--font-display);
@@ -272,7 +289,7 @@ body {
   letter-spacing: var(--tracking-tight);
 }
 
-.page__lead {
+.lp-page__lead {
   position: relative;
   margin: 0;
   max-width: 60ch;
@@ -285,19 +302,19 @@ body {
 /* Ārējais režģis: 12 kolonnas. Grupas aizņem 4 / 6 / 12.
    Iekšējais režģis vienmēr 6 kolonnas neatkarīgi no grupas
    platuma, tāpēc flīžu izmēri ir paredzami: sm=2, md=3, lg=6. */
-.board {
+.lp-board {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: var(--sp-7) var(--sp-5);
 }
-.board:focus { outline: none; }
+.lp-board:focus { outline: none; }
 
-.group {
+.lp-group {
   grid-column: span var(--group-span, 6);
   min-width: 0;
 }
 
-.group__head {
+.lp-group__head {
   display: flex;
   align-items: center;
   gap: var(--sp-3);
@@ -306,7 +323,7 @@ body {
 
 /* Sadaļas ikona — Font Awesome Pro Light, 20px, kā to zīmola
    vadlīnijas nosaka navigācijas līmeņa ikonām. */
-.group__icon {
+.lp-group__icon {
   flex: none;
   width: 20px;
   font-size: 18px;
@@ -315,7 +332,7 @@ body {
   color: var(--accent);
 }
 
-.group__title {
+.lp-group__title {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 600;
@@ -324,14 +341,14 @@ body {
   letter-spacing: var(--tracking-tight);
 }
 
-.group__count {
+.lp-group__count {
   margin-left: auto;
   font-family: var(--font-mono);
   font-size: var(--d-text-meta);
   color: var(--fg-subtle);
 }
 
-.group__grid {
+.lp-group__grid {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: var(--sp-4);
@@ -340,7 +357,7 @@ body {
   grid-auto-flow: dense;
 }
 
-.tile {
+.lp-tile {
   grid-column: span var(--tile-span, 3);
   min-width: 0;
 }
@@ -348,7 +365,7 @@ body {
 /* ---------- flīze ---------- */
 
 /* Karte: balts laukums, 1px apmale, bez ēnas. */
-.tile__inner {
+.lp-tile__inner {
   display: flex;
   flex-direction: column;
   gap: var(--sp-3);
@@ -367,14 +384,14 @@ body {
 /* Hover tikai tur, kur tas tiešām ir — citādi skārienekrānos
    flīzes paliek "iestrēgušas" hover stāvoklī. */
 @media (hover: hover) {
-  .tile__inner[href]:hover {
+  .lp-tile__inner[href]:hover {
     border-color: var(--line-strong);
     transform: translateY(-2px);
   }
-  .icon-button:hover { border-color: var(--line-strong); color: var(--fg); }
+  .lp-icon-button:hover { border-color: var(--line-strong); color: var(--fg); }
 }
 
-.tile__mark {
+.lp-tile__mark {
   width: 48px;
   height: 48px;
   flex: none;
@@ -382,7 +399,7 @@ body {
 
 /* Plakanā monogramma — dizaina sistēmas otrais monogrammu režīms.
    Toņi nāk no piecām definētajām toņu saimēm. */
-.tile__mono {
+.lp-tile__mono {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -401,9 +418,9 @@ body {
   box-shadow: 0 0 0 1px var(--line);
 }
 
-.tile__body { display: flex; flex-direction: column; gap: 2px; }
+.lp-tile__body { display: flex; flex-direction: column; gap: 2px; }
 
-.tile__title {
+.lp-tile__title {
   font-family: var(--font-display);
   font-weight: 600;
   font-size: clamp(var(--fs-base), 1.6vw, var(--fs-md));
@@ -411,42 +428,42 @@ body {
   letter-spacing: var(--tracking-tight);
 }
 
-.tile__desc {
+.lp-tile__desc {
   color: var(--fg-muted);
   font-size: var(--d-text-meta);
   line-height: var(--lh-body);
 }
 
-.tile__foot { margin-top: auto; padding-top: var(--sp-2); }
+.lp-tile__foot { margin-top: auto; padding-top: var(--sp-2); }
 
 /* Izmērs nes nozīmi: lielākā flīze saņem lielāku marķējumu un
    virsrakstu, nevis tikai vairāk tukšuma. */
-.tile--sm .tile__mark,
-.tile--sm .tile__mono { width: 40px; height: 40px; }
-.tile--sm .tile__mono { font-size: 16px; }
-.tile--sm .tile__title { font-size: var(--fs-base); }
+.lp-tile--sm .lp-tile__mark,
+.lp-tile--sm .lp-tile__mono { width: 40px; height: 40px; }
+.lp-tile--sm .lp-tile__mono { font-size: 16px; }
+.lp-tile--sm .lp-tile__title { font-size: var(--fs-base); }
 
 /* Platā flīze liek marķējumu blakus tekstam, lai platums tiktu
    izmantots, nevis izstiepts tukšumā. */
 @media (min-width: 768px) {
-  .tile--lg .tile__inner {
+  .lp-tile--lg .lp-tile__inner {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
     grid-template-areas: 'mark body' 'foot foot';
     align-content: start;
     column-gap: var(--sp-5);
   }
-  .tile--lg .tile__mark,
-  .tile--lg .tile__mono { grid-area: mark; width: 64px; height: 64px; }
-  .tile--lg .tile__mono { font-size: 25px; }
-  .tile--lg .tile__body { grid-area: body; align-self: center; }
-  .tile--lg .tile__foot { grid-area: foot; }
-  .tile--lg .tile__title { font-size: clamp(var(--fs-md), 2vw, var(--fs-lg)); }
+  .lp-tile--lg .lp-tile__mark,
+  .lp-tile--lg .lp-tile__mono { grid-area: mark; width: 64px; height: 64px; }
+  .lp-tile--lg .lp-tile__mono { font-size: 25px; }
+  .lp-tile--lg .lp-tile__body { grid-area: body; align-self: center; }
+  .lp-tile--lg .lp-tile__foot { grid-area: foot; }
+  .lp-tile--lg .lp-tile__title { font-size: clamp(var(--fs-md), 2vw, var(--fs-lg)); }
 }
 
 /* Statusa nozīmīte — vienīgā vieta, kur zīmols atļauj pilnu
    noapaļojumu. Versāls ar 0.14em atstarpi. */
-.pill {
+.lp-pill {
   display: inline-block;
   padding: 3px var(--sp-3);
   border: 1px solid var(--line);
@@ -464,21 +481,132 @@ body {
 
 /* Redzama, bet nepalaižama flīze. Nav <a>, nav href — tātad nav
    arī tukša klikšķa. Fokusējama un nolasāma, tikai ne aktivizējama. */
-.tile--izstrade .tile__inner {
+.lp-tile--izstrade .lp-tile__inner {
   background: var(--bg);
   border-style: dashed;
   cursor: default;
 }
-.tile--izstrade .tile__title { color: var(--fg-muted); }
-.tile--izstrade .tile__desc { color: var(--fg-subtle); }
-.tile--izstrade .tile__mono {
+.lp-tile--izstrade .lp-tile__title { color: var(--fg-muted); }
+.lp-tile--izstrade .lp-tile__desc { color: var(--fg-subtle); }
+.lp-tile--izstrade .lp-tile__mono {
   background: var(--smilsu-pelekais);
   color: var(--bg-alt);
 }
 
+/* ---------- kājene ---------- */
+
+.lp-footer {
+  border-top: 1px solid var(--line);
+  margin-top: var(--sp-9);
+}
+
+.lp-footer__inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: var(--sp-7) var(--sp-5) var(--sp-8);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-7);
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.lp-footer__block { flex: 1 1 30rem; min-width: 0; }
+
+/* Versāls eyebrow ar 0.14em atstarpi — zīmola noteiktais uzlīmju stils. */
+.lp-footer__label {
+  margin: 0 0 var(--sp-5);
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-mega);
+  color: var(--fg-subtle);
+}
+
+.lp-techlist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--sp-4) var(--sp-5);
+}
+
+.lp-techlist__item {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  grid-template-areas: 'icon name' 'icon role';
+  column-gap: var(--sp-3);
+  align-items: baseline;
+}
+
+.lp-techlist__icon {
+  grid-area: icon;
+  font-size: 16px;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--accent);
+}
+
+.lp-techlist__name {
+  grid-area: name;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-sm);
+  letter-spacing: var(--tracking-tight);
+}
+
+.lp-techlist__role {
+  grid-area: role;
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+}
+
+.lp-footer__meta {
+  flex: 0 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.lp-footer__org {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-snug);
+  color: var(--fg-muted);
+}
+.lp-footer__org strong {
+  display: inline-block;
+  margin-top: 2px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-md);
+  letter-spacing: var(--tracking-tight);
+  color: var(--fg);
+}
+
+.lp-footer__credit {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--fg-subtle);
+}
+.lp-footer__credit i { color: var(--accent); font-size: 13px; }
+.lp-footer__credit a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+@media (hover: hover) {
+  .lp-footer__credit a:hover { border-bottom-color: currentColor; }
+}
+
 /* ---------- tukšs rezultāts ---------- */
 
-.empty {
+.lp-empty {
   margin: var(--sp-8) 0 0;
   text-align: center;
   color: var(--fg-muted);
@@ -492,46 +620,52 @@ body {
 
 /* Planšete: viss vienā 6 kolonnu režģī — grupas pilnā platumā. */
 @media (max-width: 1199px) {
-  .board { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-  .group { grid-column: span 6; }
+  .lp-board { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .lp-group { grid-column: span 6; }
 }
 
 /* Mazā planšete / lielais tālrunis: flīzes kļūst platākas. */
 @media (max-width: 767px) {
-  .tile--sm { grid-column: span 3; }
-  .tile--md,
-  .tile--lg { grid-column: span 6; }
-  .page { padding: var(--sp-5) var(--sp-4) var(--sp-8); }
-  .topbar__inner { padding: var(--sp-2) var(--sp-4); }
+  .lp-tile--sm { grid-column: span 3; }
+  .lp-tile--md,
+  .lp-tile--lg { grid-column: span 6; }
+  .lp-page { padding: var(--sp-5) var(--sp-4) var(--sp-8); }
+  .lp-topbar__inner { padding: var(--sp-2) var(--sp-4); }
 }
 
 /* Tālrunis: viena kolonna. Filtrs pārceļas zem joslas, lai
    nekonkurētu par vietu ar vārdzīmi. */
 @media (max-width: 559px) {
-  .board { grid-template-columns: minmax(0, 1fr); gap: var(--sp-6); }
-  .group__grid { grid-template-columns: minmax(0, 1fr); }
-  .group { grid-column: span 1; }
-  .tile,
-  .tile--sm,
-  .tile--md,
-  .tile--lg { grid-column: span 1; }
+  .lp-board { grid-template-columns: minmax(0, 1fr); gap: var(--sp-6); }
+  .lp-group__grid { grid-template-columns: minmax(0, 1fr); }
+  .lp-group { grid-column: span 1; }
+  .lp-tile,
+  .lp-tile--sm,
+  .lp-tile--md,
+  .lp-tile--lg { grid-column: span 1; }
 
-  .topbar__inner { flex-wrap: wrap; row-gap: var(--sp-2); }
-  .topbar__tools { width: 100%; margin-left: 0; }
-  .filter { flex: 1 1 auto; }
-  .filter__input { width: 100%; }
-  .wordmark__text { font-size: var(--fs-base); }
-  .page__texture { display: none; }
+  .lp-topbar__inner { flex-wrap: wrap; row-gap: var(--sp-2); }
+  .lp-topbar__tools { width: 100%; margin-left: 0; }
+  .lp-filter { flex: 1 1 auto; }
+  .lp-filter__input { width: 100%; }
+  .lp-wordmark__text { font-size: var(--fs-base); }
+  .lp-page__texture { display: none; }
+
+  .lp-footer__inner {
+    padding: var(--sp-6) var(--sp-4) var(--sp-7);
+    gap: var(--sp-6);
+  }
+  .lp-techlist { grid-template-columns: minmax(0, 1fr); gap: var(--sp-3); }
 }
 
 /* Skārienierīces: 44px minimālais pieskāriena mērķis. Zīmola
    --d-control-h ir 32px, kas der pelei, bet ne īkšķim. */
 @media (pointer: coarse) {
-  .filter__input,
-  .icon-button {
+  .lp-filter__input,
+  .lp-icon-button {
     min-height: 44px;
   }
-  .icon-button { min-width: 44px; }
+  .lp-icon-button { min-width: 44px; }
 }
 
 /* Samazināta kustība: nost ar pacēlumiem un pārejām. */
@@ -542,12 +676,12 @@ body {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .tile__inner[href]:hover { transform: none; }
-  .icon-button:active { transform: none; }
+  .lp-tile__inner[href]:hover { transform: none; }
+  .lp-icon-button:active { transform: none; }
 }
 
 /* Drukā: bez hroma, viss redzams. */
 @media print {
-  .topbar, .skip-link, .page__texture { display: none; }
-  .tile__inner { border-color: #999; }
+  .lp-topbar, .lp-skip-link, .lp-page__texture { display: none; }
+  .lp-tile__inner { border-color: #999; }
 }

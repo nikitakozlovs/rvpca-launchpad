@@ -1,7 +1,8 @@
-# Rīga launchpad — user guide
+# RVP CA launchpad — user guide
 
-The launchpad is a single page collecting the City of Rīga municipality's
-internal webapps. From here you can reach every system you have access to,
+The launchpad is a single page collecting the internal webapps of the Central
+Administration of the City of Rīga municipality (Rīgas valstspilsētas pašvaldības
+Centrālā administrācija). From here you can reach every system you have access to,
 without hunting through bookmarks.
 
 Latviešu valodā: [`docs/lv/lietotaja-rokasgramata.md`](../lv/lietotaja-rokasgramata.md)

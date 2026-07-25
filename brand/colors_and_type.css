@@ -8,7 +8,13 @@
    in Google Sans; monospace in Google Sans Code. Pair was chosen by
    the brand owner — both are tonally calm geometric sans-serifs that
    sit cleanly under Gilroy's display weight. */
-@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Code:wght@400;500&display=swap');
+/* ⚠ RVPCA LOKĀLĀ IZMAIŅA — vienīgā vieta, kur šis komplekts atšķiras
+   no oriģināla. Sākotnēji šeit bija:
+     @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Code:wght@400;500&display=swap');
+   Darbvirsma nedrīkst pieprasīt neko no ārpuses, tāpēc tie paši fonti
+   tiek ielādēti lokāli. Pārkopējot dizaina sistēmu no jauna, šī rinda
+   ir jāatjauno. Sk. docs/lv/izstrade.md → "Pārkopēšana". */
+@import url('fonts/google-sans/google-sans.css');
 
 @font-face {
   font-family: 'Gilroy';

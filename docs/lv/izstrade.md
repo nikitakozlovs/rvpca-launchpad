@@ -1,4 +1,4 @@
-# Rīgas darbvirsma — izstrādes dokumentācija
+# RVP CA darbvirsma — izstrādes dokumentācija
 
 English version: [`docs/en/development.md`](../en/development.md)
 
@@ -30,11 +30,12 @@ bloķēts, un tas piespiestu turēt serveri arī tur, kur tas nav vajadzīgs.
 ## Failu izkārtojums
 
 ```
-index.html          lapas karkass, CDN tagi noteiktajā secībā
+index.html          lapas karkass
 config/apps.js      SATURS — vienīgais fails, ko parasti maina
 app.js              attēlošana, filtrs, tēmas slēdzis
-launchpad.css       bento režģis un flīzes
-brand/              dizaina sistēma, pārņemta bez izmaiņām
+launchpad.css       bento režģis, flīzes, kājene
+brand/              dizaina sistēma, pārņemta (viena labota rinda, sk. zemāk)
+vendor/             daisyUI + Tailwind, lokāli
 docs/               šī dokumentācija
 ```
 
@@ -176,14 +177,40 @@ atsevišķs mobilais CSS.
 
 ## `brand/` ir pārņemts, nevis rakstīts
 
-Viss mapē `brand/` ir nokopēts no dizaina sistēmas komplekta **bez izmaiņām**.
+Viss mapē `brand/` ir nokopēts no dizaina sistēmas komplekta praktiski bez
+izmaiņām — ar tieši vienu apzinātu, atzīmētu izņēmumu, kas aprakstīts zemāk.
 
 **Nelabo neko turpat.** Kad dizaina sistēma tiek atjaunināta, pārkopē failus
 no jauna. Ja kaut kas ir jāpārraksta, dari to `launchpad.css` failā — tas
 ielādējas pēc `brand/styles.css`.
 
+### Pārkopēšana: viena rinda, kas jāatjauno
+
+No komplekta ir tieši **viena** lokāla atkāpe, un pēc katras pārkopēšanas tā ir
+jāatjauno — citādi darbvirsma klusi atsāk pieprasīt Google Fonts.
+
+Failā `brand/colors_and_type.css` komplekta 11. rinda ir:
+
+```css
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Code:wght@400;500&display=swap');
+```
+
+Aizvieto to ar:
+
+```css
+@import url('fonts/google-sans/google-sans.css');
+```
+
+Atkāpe failā ir atzīmēta ar komentāru `⚠ RVPCA LOKĀLĀ IZMAIŅA`. Lai pārliecinātos,
+ka nekas cits nav aizgājis pa savu ceļu, salīdzini pārkopēto koku ar komplektu —
+šim vienam gabalam jābūt vienīgajai atšķirībai.
+
+Pēc tam pārbaudi ar ārējo pieprasījumu sargu, kas aprakstīts sadaļā
+[Nekādu ārējo pieprasījumu](#nekādu-ārējo-pieprasījumu).
+
 Iekļauts: `styles.css`, `colors_and_type.css`, `daisyui-theme.css`, Gilroy,
 Font Awesome, produktu marķējumu eksporti, rakstu flīzes, 14 atslēgu glifi.
+Mūsu pievienots, nevis no komplekta: `brand/fonts/google-sans/` (sk. zemāk).
 
 Nav iekļauts: komplekta `uploads/`, `_ds_bundle.js`, `components/`, `ui_kits/`.
 Dizaina sistēma pati norāda, ka tās JSX ir "cosmetic, not production-ready" un ka
@@ -229,24 +256,66 @@ Tas pats princips attiecas uz krāsu variantiem: `.theme-red` iet kopā ar
 - [ ] Visi `url` lauki norāda uz īstām adresēm, nevis `#`
 - [ ] Lapa atveras gan no servera, gan no `file://`
 - [ ] Konsolē nav kļūdu
+- [ ] **Nav ārējo pieprasījumu** — palaid sargu no augšas; rezultātam jābūt nullei
 - [ ] Nav horizontālas ritināšanas nevienā platumā no 1440px līdz 360px
 - [ ] Tumšais režīms pārkrāso visu; nekur nav iekodētu heksadecimālo vērtību
 - [ ] `Tab` iet cauri visām flīzēm un fokusa gredzens ir redzams
 - [ ] `IZSTRĀDĒ` flīzes neatveras ne ar klikšķi, ne ar `Enter`
 
-## Zināmās atkarības no tīkla
+## Nekādu ārējo pieprasījumu
 
-Lapa ielādē trīs lietas no ārpuses:
+Lapa neielādē **neko** no interneta. Viss ir novietots lokāli, tāpēc darbvirsma
+strādā slēgtā tīklā, bez interneta, un nenoplūdina pieprasījumu datus trešajām
+pusēm.
 
-| Resurss | Avots |
-|---|---|
-| daisyUI 5 | `cdn.jsdelivr.net` |
-| Tailwind CSS 4 (pārlūka būvējums) | `cdn.jsdelivr.net` |
-| Google Sans / Google Sans Code | `fonts.googleapis.com` |
+| Resurss | Kur atrodas | Versija |
+|---|---|---|
+| daisyUI | `vendor/daisyui.css` | 5.7.4 |
+| Tailwind CSS (pārlūka būvējums) | `vendor/tailwindcss-browser.js` | 4.3.3 |
+| Google Sans / Google Sans Code | `brand/fonts/google-sans/` | caur Fontsource 5.3.0 |
+| Gilroy | `brand/fonts/Gilroy-SemiBold.woff` | no komplekta |
+| Font Awesome 7 Pro | `brand/fonts/fontawesome/` | no komplekta |
 
-Tā ir dizaina sistēmas noteiktā pieeja ("CDN, no build step"). Gilroy un
-Font Awesome jau ir novietoti lokāli mapē `brand/`.
+Dizaina sistēma nosaka "Tailwind CSS + DaisyUI (CDN, no build step)". Tie paši
+faili, pasniegti lokāli, saglabā gan tehnoloģiju kopumu, gan īpašību "bez
+būvēšanas soļa" — mainās tikai izcelsme.
 
-Ja darbvirsmai jāstrādā slēgtā tīklā vai bez interneta, šos trīs var novietot
-lokāli blakus pārējiem `brand/` failiem un nomainīt ceļus `index.html` sākumā.
-Pārējais kods nemainās.
+Piegādāti tikai `latin` un `latin-ext` apakškopumi, tikai woff2. `latin-ext` nes
+latviešu diakritiku (ā ē ī ū č ģ ķ ļ ņ š ž — visas U+0100–02BA diapazonā), un
+katrs `@font-face` deklarē savu `unicode-range`, tāpēc pārlūks lejupielādē tikai
+to apakškopumu, kas konkrētajai rakstzīmei vajadzīgs.
+
+Kā atjaunināt daisyUI un Tailwind — sk. `vendor/README.md`.
+
+**Regresijas sargs.** Nejauša CDN atsauce izstrādē paliek nepamanīta (resurss taču
+ielādējas), tāpēc to nevis apskata, bet pārbauda: nobloķē visus nelokālos
+pieprasījumus un pārliecinās, ka lapa nemainās.
+
+```js
+await ctx.route('**/*', route =>
+  route.request().url().startsWith('http://127.0.0.1:8899/')
+    ? route.continue()
+    : route.abort());   // jebkurš ārējs pieprasījums tagad salauž lapu redzami
+```
+
+## CSS klašu telpa
+
+Visām šī projekta klasēm ir priedēklis **`lp-`** (`lp-tile`, `lp-group__head`,
+`lp-footer`). Tas nav kosmētikas dēļ: daisyUI piegādā komponentus ar nosaukumiem
+`.footer`, `.filter`, `.card`, `.badge`, `.status` un daudz citu, un klase bez
+priedēkļa klusi manto attiecīgā komponenta izkārtojumu. Gan `.footer`, gan
+`.filter` sadūrās, pirms priedēklis tika ieviests.
+
+Divi apzināti izņēmumi:
+
+- `.sr-only` — sakrīt ar Tailwind paša utilītu, kurai ir tāda pati nozīme.
+- `.dark` — pieder dizaina sistēmai (`brand/colors_and_type.css`).
+
+Pievienojot klasi, liec priedēkli. Kā pārbaudīt, vai nosaukums ir brīvs:
+
+```bash
+grep -c '\.mana-klase' vendor/daisyui.css   # 0 = droši
+```
+
+Elementu **ID** priedēkli nesaņem — tie nav daļa no CSS kaskādes un ar stila lapu
+sadurties nevar.

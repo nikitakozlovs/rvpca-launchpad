@@ -1,4 +1,4 @@
-# Rīga launchpad — development guide
+# RVP CA launchpad — development guide
 
 Latviešu valodā: [`docs/lv/izstrade.md`](../lv/izstrade.md)
 
@@ -32,11 +32,12 @@ need one.
 ## Layout
 
 ```
-index.html          page shell, CDN tags in the mandated order
+index.html          page shell
 config/apps.js      CONTENT — normally the only file you edit
 app.js              rendering, filter, theme toggle
-launchpad.css       bento grid and tiles
-brand/              the design system, vendored unmodified
+launchpad.css       bento grid, tiles, footer
+brand/              the design system, vendored (one patched line, see below)
+vendor/             daisyUI + Tailwind, self-hosted
 docs/               this documentation
 ```
 
@@ -177,14 +178,40 @@ separate mobile stylesheet.
 
 ## `brand/` is vendored, not authored
 
-Everything under `brand/` is copied from the design system kit **unmodified**.
+Everything under `brand/` is copied from the design system kit essentially
+unmodified — with exactly one deliberate, marked exception, documented below.
 
 **Do not patch it in place.** When the design system is updated, re-copy the
 files. If something needs overriding, do it in `launchpad.css`, which loads after
 `brand/styles.css`.
 
+### Re-vendoring: the one line to re-apply
+
+There is exactly **one** local deviation from the kit, and it must be re-applied
+after every re-copy or the launchpad silently starts calling Google Fonts again.
+
+In `brand/colors_and_type.css`, the kit's line 11 is:
+
+```css
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Code:wght@400;500&display=swap');
+```
+
+Replace it with:
+
+```css
+@import url('fonts/google-sans/google-sans.css');
+```
+
+The deviation is marked in the file with a `⚠ RVPCA LOKĀLĀ IZMAIŅA` comment. To
+confirm nothing else drifted, diff the re-copied tree against the kit — that one
+hunk should be the only difference.
+
+Verify afterwards with the external-request guard described under
+[No external requests](#no-external-requests).
+
 Included: `styles.css`, `colors_and_type.css`, `daisyui-theme.css`, Gilroy, Font
-Awesome, the product mark exports, the pattern tiles, and the 14 key glyphs.
+Awesome, the product mark exports, the pattern tiles, and the 14 key glyphs. Added
+by us, not from the kit: `brand/fonts/google-sans/` (see below).
 
 Not included: the kit's `uploads/`, `_ds_bundle.js`, `components/`, `ui_kits/`.
 The design system itself states that its JSX is "cosmetic, not production-ready"
@@ -228,24 +255,66 @@ The same applies to the colourways: `.theme-red` pairs with
 - [ ] Every `url` points at a real address, not `#`
 - [ ] The page opens both from a server and from `file://`
 - [ ] No console errors
+- [ ] **No external requests** — run the guard above; it must report zero
 - [ ] No horizontal scrolling at any width from 1440px down to 360px
 - [ ] Dark mode recolours everything; no hard-coded hex left anywhere
 - [ ] `Tab` reaches every tile and the focus ring is visible
 - [ ] `IZSTRĀDĒ` tiles do not open on click or `Enter`
 
-## Known network dependencies
+## No external requests
 
-The page loads three things from outside:
+The page loads **nothing** from the internet. Everything is self-hosted, so the
+launchpad works on a closed network, offline, and leaks no request data to third
+parties.
 
-| Resource | Source |
-|---|---|
-| daisyUI 5 | `cdn.jsdelivr.net` |
-| Tailwind CSS 4 (browser build) | `cdn.jsdelivr.net` |
-| Google Sans / Google Sans Code | `fonts.googleapis.com` |
+| Resource | Where it lives | Version |
+|---|---|---|
+| daisyUI | `vendor/daisyui.css` | 5.7.4 |
+| Tailwind CSS (browser build) | `vendor/tailwindcss-browser.js` | 4.3.3 |
+| Google Sans / Google Sans Code | `brand/fonts/google-sans/` | via Fontsource 5.3.0 |
+| Gilroy | `brand/fonts/Gilroy-SemiBold.woff` | from the kit |
+| Font Awesome 7 Pro | `brand/fonts/fontawesome/` | from the kit |
 
-This is the approach the design system mandates ("CDN, no build step"). Gilroy and
-Font Awesome are already self-hosted under `brand/`.
+The design system specifies "Tailwind CSS + DaisyUI (CDN, no build step)". Serving
+the identical files locally keeps the stack and the no-build-step property — only
+the origin changes.
 
-If the launchpad has to work on a closed network or offline, these three can be
-placed locally alongside the other `brand/` files and the paths swapped at the top
-of `index.html`. Nothing else changes.
+Only `latin` and `latin-ext` font subsets are shipped, woff2 only. `latin-ext`
+carries the Latvian diacritics (ā ē ī ū č ģ ķ ļ ņ š ž all sit in U+0100–02BA), and
+each `@font-face` declares its `unicode-range` so the browser fetches only the
+subset a given character needs.
+
+See `vendor/README.md` for how to refresh daisyUI and Tailwind.
+
+**Regression guard.** Because a stray CDN reference fails silently in development
+(the asset just loads), assert it rather than eyeballing it: block every non-local
+request and confirm the page is unchanged.
+
+```js
+await ctx.route('**/*', route =>
+  route.request().url().startsWith('http://127.0.0.1:8899/')
+    ? route.continue()
+    : route.abort());   // any external request now breaks the page loudly
+```
+
+## CSS class namespace
+
+Every class this project owns is prefixed **`lp-`** (`lp-tile`, `lp-group__head`,
+`lp-footer`). This is not cosmetic: daisyUI ships components called `.footer`,
+`.filter`, `.card`, `.badge`, `.status` and many more, and an unprefixed class
+silently inherits that component's layout. Both `.footer` and `.filter` collided
+before the prefix was introduced.
+
+Two deliberate exceptions:
+
+- `.sr-only` — matches Tailwind's own utility of identical intent.
+- `.dark` — belongs to the design system (`brand/colors_and_type.css`).
+
+When adding a class, prefix it. To check a name is free:
+
+```bash
+grep -c '\.myclass' vendor/daisyui.css   # 0 = safe
+```
+
+Element **IDs** are not prefixed — they are not part of the CSS cascade and cannot
+collide with a stylesheet.

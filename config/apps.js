@@ -1,5 +1,5 @@
 /* ============================================================
-   RĪGAS DARBVIRSMA — SATURA KONFIGURĀCIJA
+   RVP CA DARBVIRSMA — SATURA KONFIGURĀCIJA
    config/apps.js
 
    Vienīgā vieta, kur maina darbvirsmas saturu. Nav būvēšanas
@@ -20,8 +20,8 @@
    ============================================================ */
 
 window.RVPCA_LAUNCHPAD = {
-  title: 'Rīgas darbvirsma',
-  lead: 'Rīgas valstspilsētas pašvaldības iekšējās lietotnes.',
+  title: 'RVP CA darbvirsma',
+  lead: 'Rīgas valstspilsētas pašvaldības Centrālās administrācijas iekšējās lietotnes.',
 
   groups: [
     {

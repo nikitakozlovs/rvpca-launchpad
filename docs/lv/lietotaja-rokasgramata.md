@@ -1,8 +1,8 @@
-# Rīgas darbvirsma — lietotāja rokasgrāmata
+# RVP CA darbvirsma — lietotāja rokasgrāmata
 
 Darbvirsma ir viena lapa, kurā sakopotas Rīgas valstspilsētas pašvaldības
-iekšējās lietotnes. No šejienes tu tiec uz katru sistēmu, kurai tev ir piekļuve,
-bez adrešu meklēšanas grāmatzīmēs.
+Centrālās administrācijas iekšējās lietotnes. No šejienes tu tiec uz katru
+sistēmu, kurai tev ir piekļuve, bez adrešu meklēšanas grāmatzīmēs.
 
 English version: [`docs/en/user-guide.md`](../en/user-guide.md)
 

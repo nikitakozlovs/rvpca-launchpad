@@ -1,0 +1,32 @@
+/* ============================================================
+   RĪGA DESIGN SYSTEM — CANONICAL ENTRY POINT
+   styles.css
+
+   Stack: Tailwind CSS + DaisyUI (both loaded from CDN, no build
+   step) themed by the brand tokens below. Link THIS file and you
+   get tokens + the DaisyUI theme mapping:
+
+     1. colors_and_type.css  — raw palette, semantic roles,
+        typography, spacing/radii/shadows/motion, density scopes
+        (.dense / .airy) and the .dark scope.
+     2. daisyui-theme.css    — re-expresses those tokens as the
+        DaisyUI `sintakse` / `sintakse-dark` themes (--color-*,
+        --radius-*, --border, --depth, --noise) plus a few
+        brand-fidelity overrides (hairline cards, no shadow-by-
+        default, crisp corners).
+
+   Tailwind + DaisyUI themselves are NOT bundled here — this is a
+   static, build-step-free project, so every page loads the CDN
+   builds directly, in this order:
+
+       <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css">
+       <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+       <link rel="stylesheet" href="styles.css">
+       <!-- then: <html data-theme="sintakse"> (or "sintakse-dark") -->
+
+   Bootstrap and riga-utilities.css have been removed from this
+   system — see README.md for the migration notes.
+   ============================================================ */
+
+@import url('colors_and_type.css');
+@import url('daisyui-theme.css');

@@ -1,0 +1,453 @@
+/* ============================================================
+   RĪGA DESIGN SYSTEM — COLORS + TYPOGRAPHY
+   All palette names are in Latvian, matching the brand specs.
+   ============================================================ */
+
+/* ---------- FONTS ---------- */
+/* Gilroy SemiBold is provided as the display face. Body type is set
+   in Google Sans; monospace in Google Sans Code. Pair was chosen by
+   the brand owner — both are tonally calm geometric sans-serifs that
+   sit cleanly under Gilroy's display weight. */
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Code:wght@400;500&display=swap');
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('fonts/Gilroy-SemiBold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* ---------- BRAND PALETTE (Latvian names) ---------- */
+
+  /* Blues */
+  --rudzupuku-zilais:  #254CD4; /* cornflower blue — primary accent */
+  --debesu-zilais:     #AAD0FF; /* sky blue */
+  --janu-nakts-zilais: #000B40; /* Midsummer-night blue — primary dark */
+
+  /* Greens */
+  --gurkisu-zalais:    #E2FF86; /* cucumber/lime green */
+  --priezu-zalais:     #0D382C; /* pine green */
+  --kapara-zalais:     #78E9B8; /* copper-patina green */
+
+  /* Greys */
+  --smilsu-pelekais:   #B8B6A4; /* sand grey */
+  --novembra-pelekais: #565947; /* November grey */
+
+  /* Reds */
+  --dakstinu-sarkanais:#FF4B33; /* roof-tile red — alert / highlight */
+
+  /* Neutrals (system-derived, not in brand sheet) */
+  --balta:             #FFFFFF; /* white */
+  --melna:             #0A0A0A; /* near-black */
+  --papira:            #F4EDE2; /* warm paper — soft background */
+
+  /* ---------- OFFICE COLORWAYS (client-supplied) ----------
+     Three Microsoft Office colour schemes (RVP-Blue/Red/Green-EXT.xml,
+     packaged as assets/office-theme/theme1/2/3.xml) reskin the whole
+     system's accent. Blue *is* the default brand palette above (its
+     12 Office slots map 1:1 onto the tokens already named — dk1 =
+     --janu-nakts-zilais, accent1 = --rudzupuku-zilais, accent2 =
+     --debesu-zilais, accent6 = --gurkisu-zalais — so no separate
+     "office-blue-*" tokens are needed). Red and Green introduce hexes
+     not already in the brand sheet; those get their own tokens below.
+     See `.theme-red` / `.theme-green` for the semantic-role remap,
+     `[data-theme="sintakse-red/-green"]` in daisyui-theme.css for the
+     DaisyUI-facing remap, and showcases/theme-gallery.html for a live
+     component sampler across all three. */
+  --office-red-dk1:     #43010B; /* krēslas — dark chrome / primary text */
+  --office-red-lt1:     #F4ECE6; /* bērzlapju — page canvas */
+  --office-red-accent1: #FF4B33; /* dakstiņu — primary action (same hex as --dakstinu-sarkanais) */
+  --office-red-accent2: #FFC4B8; /* light salmon — soft accent */
+  --office-red-accent3: #2E0A0F; /* near-black maroon — deep secondary */
+  --office-red-accent4: #BEAFEC; /* lavandas — soft/positive tint */
+  --office-red-accent5: #B8B6A4; /* sand (same hex as --smilsu-pelekais) */
+  --office-red-accent6: #E2FF86; /* lime (same hex as --gurkisu-zalais) */
+
+  --office-green-dk1:     #0D382C; /* priežu — dark chrome / primary text (same hex as --priezu-zalais) */
+  --office-green-lt1:     #ECEEDF; /* liepu — page canvas */
+  --office-green-accent1: #1FB57C; /* office green — primary action */
+  --office-green-accent2: #E2FF86; /* lime (same hex as --gurkisu-zalais) */
+  --office-green-accent3: #0A2E24; /* near-black green — deep secondary */
+  --office-green-accent4: #78E9B8; /* kapara (same hex as --kapara-zalais) */
+  --office-green-accent5: #8F993E; /* olive — muted secondary */
+  --office-green-accent6: #B8B6A4; /* sand (same hex as --smilsu-pelekais) */
+
+  /* ---------- SEMANTIC ROLES ---------- */
+  --bg:                var(--papira);
+  --bg-alt:            var(--balta);
+  --bg-inverse:        var(--janu-nakts-zilais);
+
+  --fg:                var(--janu-nakts-zilais);   /* primary text */
+  --fg-muted:          var(--novembra-pelekais);   /* secondary text */
+  --fg-subtle:         var(--smilsu-pelekais);     /* tertiary / captions */
+  --fg-inverse:        var(--papira);              /* text on dark bg */
+
+  --accent:            var(--rudzupuku-zilais);    /* primary accent */
+  --accent-soft:       var(--debesu-zilais);
+  --accent-deep:       var(--janu-nakts-zilais);
+
+  --signal:            var(--dakstinu-sarkanais);  /* alerts, "now", highlights */
+  --signal-text:       #b9301e;                    /* darker, readable-as-body-text variant of --signal */
+  --positive:          var(--kapara-zalais);
+  --positive-soft:     var(--gurkisu-zalais);
+  --positive-text:     #0d6b48;                    /* darker, readable-as-body-text variant of --positive */
+  --forest:            var(--priezu-zalais);       /* deep secondary */
+
+  --line:              rgba(0, 11, 64, 0.14);      /* hairline on light */
+  --line-strong:       rgba(0, 11, 64, 0.32);
+  --line-inverse:      rgba(244, 237, 226, 0.18);  /* hairline on dark */
+
+  /* ---------- TYPOGRAPHY ---------- */
+  --font-display:      'Gilroy', 'Google Sans', system-ui, sans-serif;
+  --font-body:         'Google Sans', 'Gilroy', system-ui, sans-serif;
+  --font-mono:         'Google Sans Code', ui-monospace, SFMono-Regular, monospace;
+
+  /* Modular scale, 1.250 (major third) */
+  --fs-xs:    12px;
+  --fs-sm:    14px;
+  --fs-base:  16px;
+  --fs-md:    18px;
+  --fs-lg:    22px;
+  --fs-xl:    28px;
+  --fs-2xl:   36px;
+  --fs-3xl:   48px;
+  --fs-4xl:   64px;
+  --fs-5xl:   88px;
+  --fs-6xl:  128px;
+
+  --lh-tight:  1.04;  /* @kind font */
+  --lh-snug:   1.18;  /* @kind font */
+  --lh-body:   1.5;   /* @kind font */
+  --lh-loose:  1.65;  /* @kind font */
+
+  --tracking-tight:  -0.02em;
+  --tracking-normal:  0em;
+  --tracking-wide:    0.04em;
+  --tracking-mega:    0.14em;  /* uppercase eyebrows */
+
+  /* ---------- SPACING (4px grid) ---------- */
+  --sp-1:   4px;
+  --sp-2:   8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-5:  24px;
+  --sp-6:  32px;
+  --sp-7:  48px;
+  --sp-8:  64px;
+  --sp-9:  96px;
+  --sp-10:128px;
+
+  /* ---------- RADII ---------- */
+  /* The brand leans crisp / rectilinear. Radii are restrained. */
+  --r-0:   0px;
+  --r-1:   2px;
+  --r-2:   4px;
+  --r-3:   8px;
+  --r-pill: 999px;
+
+  /* ---------- SHADOWS ---------- */
+  /* Internal dashboards lean on hairlines + flat fills. Shadows are
+     reserved for floating UI (menus, toasts, modals). */
+  --shadow-sm: 0 1px 0 rgba(0, 11, 64, 0.06), 0 2px 6px rgba(0, 11, 64, 0.04);
+  --shadow-md: 0 6px 24px -8px rgba(0, 11, 64, 0.18);
+  --shadow-lg: 0 24px 48px -16px rgba(0, 11, 64, 0.24);
+
+  /* ---------- MOTION ---------- */
+  --ease-out:   cubic-bezier(0.2, 0.7, 0.2, 1);   /* @kind other */
+  --ease-in-out:cubic-bezier(0.65, 0, 0.35, 1);   /* @kind other */
+  --dur-quick:  120ms;  /* @kind other */
+  --dur-base:   220ms;  /* @kind other */
+  --dur-slow:   420ms;  /* @kind other */
+
+  /* Bootstrap has been removed from this system. DaisyUI theme
+     variables (--color-primary, --radius-box, etc.) live in the
+     sibling file daisyui-theme.css, mapped from the roles above. */
+
+  /* ============================================================
+     DENSITY TOKENS
+     Three densities. The :root values below are the "comfortable"
+     default (no class needed). Wrap any subtree in .dense or .airy
+     to switch — every component that reads --d-* picks it up.
+
+     Use cases:
+       default       general dashboards, procurement, admin
+       .dense        finance, document management, power users,
+                     data-heavy tables / list views
+       .airy         voting, landing pages, marketing-style
+                     dashboards, presentations / wallboards
+     ============================================================ */
+  --d-card-pad:       20px;
+  --d-card-radius:    var(--r-2);
+  --d-row-h:          44px;
+  --d-row-pad-y:      14px;
+  --d-row-pad-x:      14px;
+  --d-section-gap:    16px;
+  --d-kpi-num:        32px;
+  --d-kpi-label:      11px;
+  --d-control-h:      32px;
+  --d-control-pad-x:  14px;
+  --d-text-body:      14px;
+  --d-text-meta:      12px;
+  --d-line-h-body:    1.5;   /* @kind font */
+  --d-gap-form:       12px;
+}
+
+.dense {
+  --d-card-pad:       12px;
+  --d-card-radius:    var(--r-1);
+  --d-row-h:          32px;
+  --d-row-pad-y:      6px;
+  --d-row-pad-x:      10px;
+  --d-section-gap:    10px;
+  --d-kpi-num:        22px;
+  --d-kpi-label:      9px;
+  --d-control-h:      26px;
+  --d-control-pad-x:  10px;
+  --d-text-body:      12px;
+  --d-text-meta:      10px;
+  --d-line-h-body:    1.4;   /* @kind font */
+  --d-gap-form:       8px;
+}
+
+.airy {
+  --d-card-pad:       32px;
+  --d-card-radius:    var(--r-3);
+  --d-row-h:          60px;
+  --d-row-pad-y:      20px;
+  --d-row-pad-x:      20px;
+  --d-section-gap:    32px;
+  --d-kpi-num:        48px;
+  --d-kpi-label:      12px;
+  --d-control-h:      40px;
+  --d-control-pad-x:  18px;
+  --d-text-body:      16px;
+  --d-text-meta:      13px;
+  --d-line-h-body:    1.65;  /* @kind font */
+  --d-gap-form:       18px;
+}
+
+/* ============================================================
+   DARK THEME
+   Apply `.dark` to <body> (or any subtree). All components that
+   read semantic tokens (--bg, --fg, --line, --accent, etc.) flip
+   automatically. Brand palette tokens stay constant — only
+   semantic role mappings change.
+   ============================================================ */
+.dark {
+  /* Surfaces */
+  --bg:                #000B40;                /* Midsummer-night, primary canvas */
+  --bg-alt:            #0a1556;                /* card / surface raised */
+  --bg-inverse:        var(--papira);
+
+  /* Text */
+  --fg:                #F4EDE2;                /* paper as primary text */
+  --fg-muted:          rgba(244, 237, 226, 0.65);
+  --fg-subtle:         rgba(244, 237, 226, 0.42);
+  --fg-inverse:        var(--janu-nakts-zilais);
+
+  /* Accents — cornflower stays primary, but soften for contrast */
+  --accent:            #4D77FF;                /* lifted cornflower, brighter on dark */
+  --accent-soft:       var(--debesu-zilais);
+  --accent-deep:       var(--rudzupuku-zilais);
+
+  /* Signal stays roof-tile but slightly softened */
+  --signal:            #FF6E5A;
+  --signal-text:       var(--signal);           /* already legible on dark, no separate ink needed */
+  --positive:          var(--kapara-zalais);
+  --positive-soft:     var(--gurkisu-zalais);
+  --positive-text:     var(--positive);         /* already legible on dark, no separate ink needed */
+  --forest:            var(--gurkisu-zalais);  /* swap pine for cucumber on dark */
+
+  /* Lines + dividers */
+  --line:              rgba(244, 237, 226, 0.10);
+  --line-strong:       rgba(244, 237, 226, 0.22);
+  --line-inverse:      rgba(0, 11, 64, 0.18);
+
+  /* Shadows — deeper on dark */
+  --shadow-sm:         0 1px 0 rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.25);
+  --shadow-md:         0 6px 24px -8px rgba(0, 0, 0, 0.55);
+  --shadow-lg:         0 24px 48px -16px rgba(0, 0, 0, 0.7);
+}
+
+/* ============================================================
+   OFFICE COLORWAYS — "Sarkanais" (Red) / "Zaļais" (Green)
+   Apply `.theme-red` or `.theme-green` to <body> (or any subtree),
+   same mechanism as `.dark` — only the semantic roles remap, and
+   only for light surfaces (the source Office theme XML files define
+   a single colour scheme each, no separate dark variant, so these
+   two are light-only for now). Pair with `data-theme="sintakse-red"`
+   / `"sintakse-green"` on the same subtree so DaisyUI components
+   (daisyui-theme.css) flip together with everything reading these
+   tokens. Values are the exact semantic choices already designed in
+   showcases/theme-gallery.html, promoted here so every component —
+   not just that one demo page — picks them up automatically.
+   Blue (the default, un-classed state) needs no override block: it
+   *is* the values already set in :root above.
+   ============================================================ */
+.theme-red {
+  --bg:                var(--office-red-lt1);
+  --bg-alt:            var(--balta);
+  --bg-inverse:        var(--office-red-dk1);
+
+  --fg:                var(--office-red-dk1);
+  --fg-muted:          #6E2A35;
+  --fg-subtle:         var(--smilsu-pelekais);
+  --fg-inverse:        var(--office-red-lt1);
+
+  --accent:            var(--office-red-accent1);  /* dakstiņu — roof-tile red carries action here */
+  --accent-soft:       var(--office-red-accent2);
+  --accent-deep:       var(--office-red-dk1);
+
+  --signal:            #8A2342;                    /* vīna — plum, since red is already the accent */
+  --signal-text:       #8A2342;                    /* already dark enough to double as body text */
+  --positive:          var(--office-red-accent4);  /* lavandas — stands in for positive, no green in this colorway */
+  --positive-soft:     var(--gurkisu-zalais);       /* lime kept as the distinct "new/highlight" tint */
+  --positive-text:     #5A3A98;
+  --forest:            var(--office-red-accent3);
+
+  --line:              rgba(67, 1, 11, 0.12);
+  --line-strong:       rgba(67, 1, 11, 0.30);
+  --line-inverse:      rgba(244, 236, 230, 0.18);
+
+  --shadow-sm:         0 1px 0 rgba(67, 1, 11, 0.06), 0 2px 6px rgba(67, 1, 11, 0.04);
+  --shadow-md:         0 6px 24px -8px rgba(67, 1, 11, 0.18);
+  --shadow-lg:         0 24px 48px -16px rgba(67, 1, 11, 0.24);
+}
+
+.theme-green {
+  --bg:                var(--office-green-lt1);
+  --bg-alt:            var(--balta);
+  --bg-inverse:        var(--priezu-zalais);
+
+  --fg:                var(--priezu-zalais);
+  --fg-muted:          #4A5946;
+  --fg-subtle:         var(--smilsu-pelekais);
+  --fg-inverse:        var(--office-green-lt1);
+
+  --accent:            var(--office-green-accent1); /* office green — new hex, not in the 9-colour brand sheet */
+  --accent-soft:       var(--gurkisu-zalais);
+  --accent-deep:       var(--priezu-zalais);
+
+  --signal:            var(--dakstinu-sarkanais);    /* roof-tile red, unchanged — no clash here */
+  --signal-text:       #b9301e;
+  --positive:          var(--kapara-zalais);
+  --positive-soft:     var(--gurkisu-zalais);
+  --positive-text:     #0d6b48;
+  --forest:            var(--office-green-accent5);  /* olive — deep secondary */
+
+  --line:              rgba(13, 56, 44, 0.12);
+  --line-strong:       rgba(13, 56, 44, 0.28);
+  --line-inverse:      rgba(236, 238, 223, 0.18);
+
+  --shadow-sm:         0 1px 0 rgba(13, 56, 44, 0.06), 0 2px 6px rgba(13, 56, 44, 0.04);
+  --shadow-md:         0 6px 24px -8px rgba(13, 56, 44, 0.18);
+  --shadow-lg:         0 24px 48px -16px rgba(13, 56, 44, 0.24);
+}
+
+/* Default link colours — undefined otherwise renders browser blue */
+a { color: var(--accent); }
+a:hover { color: var(--accent-deep); }
+
+/* ---------- SEMANTIC TEXT STYLES ---------- */
+
+html, body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+.h-display,
+h1.display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(64px, 9vw, var(--fs-6xl));
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;
+}
+
+h1, .h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-4xl);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;
+}
+
+h2, .h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-3xl);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;
+}
+
+h3, .h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-2xl);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-tight);
+}
+
+h4, .h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-xl);
+  line-height: var(--lh-snug);
+}
+
+.eyebrow {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-mega);
+  color: var(--fg-muted);
+}
+
+.lede {
+  font-size: var(--fs-lg);
+  line-height: var(--lh-body);
+  font-weight: 400;
+  color: var(--fg);
+  text-wrap: pretty;
+}
+
+p, .p {
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+  text-wrap: pretty;
+}
+
+.small, small {
+  font-size: var(--fs-sm);
+  line-height: var(--lh-body);
+  color: var(--fg-muted);
+}
+
+.caption {
+  font-size: var(--fs-xs);
+  line-height: var(--lh-snug);
+  color: var(--fg-muted);
+  letter-spacing: var(--tracking-wide);
+}
+
+code, .code {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  background: rgba(0, 11, 64, 0.06);
+  padding: 0.1em 0.4em;
+  border-radius: var(--r-1);
+}
+
+/* Latvian diacritic-rendering nicety */
+* { font-feature-settings: "kern", "liga", "calt"; }

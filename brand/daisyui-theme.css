@@ -1,0 +1,201 @@
+/* ============================================================
+   RĪGA DESIGN SYSTEM — DAISYUI THEME
+   daisyui-theme.css
+
+   Maps the brand tokens in colors_and_type.css onto DaisyUI 5's
+   theme variables. DaisyUI (a Tailwind CSS plugin) reads colour,
+   radius, border and effect values entirely from CSS custom
+   properties — no JS config, no build step needed.
+
+   LOAD ORDER (every page that uses Tailwind utilities or DaisyUI
+   components needs all four, in this order):
+
+     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css">
+     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+     <link rel="stylesheet" href=".../colors_and_type.css">
+     <link rel="stylesheet" href=".../daisyui-theme.css">
+
+   The first two are the CDN builds (no Node/build step — see
+   daisyui.com/docs/cdn). colors_and_type.css carries the raw brand
+   palette + semantic tokens; this file re-expresses them as the
+   DaisyUI themes below and layers a few brand-fidelity overrides
+   (crisp radii, hairline borders, no shadow-by-default on cards) on
+   top of DaisyUI's component CSS.
+
+   Five themes total: the default "sintakse" / "sintakse-dark" (the
+   Zilais/Blue colorway — also the brand's only dark variant), plus
+   two light-only Office colorways ported from the client-supplied
+   RVP-*-EXT.xml files (packaged as assets/office-theme/theme1/2/3.xml,
+   live-sampled in showcases/theme-gallery.html): "sintakse-red" and
+   "sintakse-green". Pair whichever data-theme you set with the
+   matching `.theme-red` / `.theme-green` class from colors_and_type.css
+   on the same subtree (see that file's "OFFICE COLORWAYS" section) so
+   both layers recolour together.
+   ============================================================ */
+
+  [data-theme="sintakse"] {
+    color-scheme: light;
+
+    /* Surfaces — cards (base-100) sit lighter than the paper page
+       bg (base-200); base-300 is the deepest hairline/hover fill. */
+    --color-base-100: #FFFFFF;              /* balta — card / modal / popover surface */
+    --color-base-200: #F4EDE2;              /* papira — page canvas */
+    --color-base-300: #E7DECC;              /* deeper paper — dividers, hover fill */
+    --color-base-content: #000B40;          /* janu-nakts-zilais — primary text */
+
+    --color-primary: #254CD4;               /* rudzupuku-zilais — cornflower, default action */
+    --color-primary-content: #FFFFFF;
+    --color-secondary: #565947;             /* novembra-pelekais — neutral secondary action */
+    --color-secondary-content: #FFFFFF;
+    --color-accent: #E2FF86;                /* gurkisu-zalais — "new since last visit" */
+    --color-accent-content: #0D382C;
+    --color-neutral: #000B40;               /* janu-nakts-zilais — dark chrome */
+    --color-neutral-content: #F4EDE2;
+
+    --color-info: #AAD0FF;                  /* debesu-zilais — sky */
+    --color-info-content: #000B40;
+    --color-success: #78E9B8;               /* kapara-zalais — copper-patina, paid/healthy */
+    --color-success-content: #0D382C;
+    --color-warning: #E2FF86;               /* gurkisu-zalais reused as warning-strength lime */
+    --color-warning-content: #0D382C;
+    --color-error: #FF4B33;                 /* dakstinu-sarkanais — roof-tile red */
+    --color-error-content: #FFFFFF;
+
+    /* Shape — crisp, rectilinear brand. Matches --r-2 / --r-3. */
+    --radius-selector: 0.25rem;   /* checkbox, radio, toggle, badge */
+    --radius-field: 0.25rem;      /* button, input, select, tab */
+    --radius-box: 0.5rem;         /* card, modal, alert */
+    --border: 1px;
+    --depth: 0;                   /* @kind other */
+    --noise: 0;                   /* @kind other */
+  }
+
+  [data-theme="sintakse-dark"] {
+    color-scheme: dark;
+
+    --color-base-100: #0A1556;              /* raised surface (card/modal) on dark */
+    --color-base-200: #000B40;              /* janu-nakts-zilais — dark page canvas */
+    --color-base-300: #142163;              /* dividers / hover fill on dark */
+    --color-base-content: #F4EDE2;          /* papira — text on dark */
+
+    --color-primary: #4D77FF;               /* lifted cornflower — brighter on dark */
+    --color-primary-content: #FFFFFF;
+    --color-secondary: #B8B6A4;             /* smilsu-pelekais — neutral secondary on dark */
+    --color-secondary-content: #000B40;
+    --color-accent: #E2FF86;                /* gurkisu-zalais unchanged */
+    --color-accent-content: #0D382C;
+    --color-neutral: #F4EDE2;               /* papira flips to light chrome fill */
+    --color-neutral-content: #000B40;
+
+    --color-info: #AAD0FF;
+    --color-info-content: #000B40;
+    --color-success: #78E9B8;               /* kapara-zalais unchanged */
+    --color-success-content: #0D382C;
+    --color-warning: #E2FF86;
+    --color-warning-content: #0D382C;
+    --color-error: #FF6E5A;                 /* softened roof-tile for dark contrast */
+    --color-error-content: #3A0D06;
+
+    --radius-selector: 0.25rem;
+    --radius-field: 0.25rem;
+    --radius-box: 0.5rem;
+    --border: 1px;
+    --depth: 0;    /* @kind other */
+    --noise: 0;    /* @kind other */
+  }
+
+  [data-theme="sintakse-red"] {
+    color-scheme: light;
+
+    --color-base-100: #FFFFFF;              /* balta — card / modal / popover surface */
+    --color-base-200: #F4ECE6;              /* office-red-lt1 — bērzlapju, page canvas */
+    --color-base-300: #ECDED4;              /* deeper paper — dividers, hover fill */
+    --color-base-content: #43010B;          /* office-red-dk1 — krēslas, primary text */
+
+    --color-primary: #FF4B33;               /* office-red-accent1 — dakstiņu, carries action here */
+    --color-primary-content: #FFFFFF;
+    --color-secondary: #43010B;             /* office-red-dk1 — dark chrome */
+    --color-secondary-content: #FFC4B8;
+    --color-accent: #BEAFEC;                /* office-red-accent4 — lavandas */
+    --color-accent-content: #43010B;
+    --color-neutral: #43010B;
+    --color-neutral-content: #F4ECE6;
+
+    --color-info: #BEAFEC;
+    --color-info-content: #43010B;
+    --color-success: #BEAFEC;               /* lavandas stands in for positive — no green in this colorway */
+    --color-success-content: #5A3A98;
+    --color-warning: #E2FF86;
+    --color-warning-content: #43010B;
+    --color-error: #8A2342;                 /* vīna — plum, since red is already the primary action */
+    --color-error-content: #FFFFFF;
+
+    --radius-selector: 0.25rem;
+    --radius-field: 0.25rem;
+    --radius-box: 0.5rem;
+    --border: 1px;
+    --depth: 0;    /* @kind other */
+    --noise: 0;    /* @kind other */
+  }
+
+  [data-theme="sintakse-green"] {
+    color-scheme: light;
+
+    --color-base-100: #FFFFFF;              /* balta — card / modal / popover surface */
+    --color-base-200: #ECEEDF;              /* office-green-lt1 — liepu, page canvas */
+    --color-base-300: #E2E6D2;              /* deeper paper — dividers, hover fill */
+    --color-base-content: #0D382C;          /* office-green-dk1 / priezu-zalais — primary text */
+
+    --color-primary: #1FB57C;               /* office-green-accent1 — default action */
+    --color-primary-content: #FFFFFF;
+    --color-secondary: #0D382C;             /* dark chrome */
+    --color-secondary-content: #E2FF86;
+    --color-accent: #E2FF86;                /* office-green-accent2 — lime */
+    --color-accent-content: #0D382C;
+    --color-neutral: #0D382C;
+    --color-neutral-content: #ECEEDF;
+
+    --color-info: #E2FF86;
+    --color-info-content: #0D382C;
+    --color-success: #78E9B8;               /* office-green-accent4 — kapara-zalais */
+    --color-success-content: #0D382C;
+    --color-warning: #E2FF86;
+    --color-warning-content: #0D382C;
+    --color-error: #FF4B33;                 /* roof-tile red, unchanged — no clash here */
+    --color-error-content: #FFFFFF;
+
+    --radius-selector: 0.25rem;
+    --radius-field: 0.25rem;
+    --radius-box: 0.5rem;
+    --border: 1px;
+    --depth: 0;    /* @kind other */
+    --noise: 0;    /* @kind other */
+  }
+
+/* ---------- BRAND-FIDELITY OVERRIDES ----------
+   DaisyUI's defaults favour soft shadows; the Rīga brand carries
+   itself on hairlines instead. These few rules apply across both
+   themes — colour still comes entirely from the theme vars above. */
+
+.card {
+  border: 1px solid var(--color-base-300, var(--line));
+  box-shadow: none;
+}
+.card.card-lift {
+  transition: border-color var(--dur-base, 220ms) var(--ease-out, ease),
+              transform var(--dur-base, 220ms) var(--ease-out, ease);
+}
+.card.card-lift:hover {
+  border-color: var(--fg-muted, currentColor);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn { box-shadow: none; text-transform: none; font-weight: 600; }
+.btn:active { scale: 0.98; }
+
+.modal-box { box-shadow: var(--shadow-lg); }
+.dropdown .menu { box-shadow: var(--shadow-md); border: 1px solid var(--line); }
+
+/* Font family follows the brand type system, not DaisyUI's default stack */
+.btn, .tab, .menu, .badge { font-family: var(--font-display); }

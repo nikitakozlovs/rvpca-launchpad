@@ -1,6 +1,5 @@
-# Šis projekts strādā bez atkarībām un bez būvēšanas soļa.
-# Šie ir tikai lokālas pārbaudes artefakti.
+# Lapa pati ir bez atkarībām un bez būvēšanas soļa.
+# node_modules ir tikai testiem (sk. package.json).
 node_modules/
-package.json
-package-lock.json
-.verify-index.html
+test-results/
+playwright-report/

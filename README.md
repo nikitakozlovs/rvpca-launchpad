@@ -15,30 +15,54 @@ strādā arī slēgtā tīklā.
 | | Latviski | English |
 |---|---|---|
 | **Lietotājiem** | [Lietotāja rokasgrāmata](docs/lv/lietotaja-rokasgramata.md) | [User guide](docs/en/user-guide.md) |
+| **Lietotnes pievienošana** | [Kā pievienot lietotni](docs/lv/pievienot-lietotni.md) | [Adding an app](docs/en/adding-an-app.md) |
 | **Izstrādei** | [Izstrādes dokumentācija](docs/lv/izstrade.md) | [Development guide](docs/en/development.md) |
+
+Vēl: [arhitektūras lēmumi](docs/adr/README.md) ·
+[veiktspējas atskaites punkts](docs/perf-baseline.md)
 
 Saskarne ir latviešu valodā. Dokumentācija ir abās valodās.
 
 ## Ātrais sākums
 
 ```bash
-python3 -m http.server 8000   # → http://127.0.0.1:8000
+npm run serve             # → http://127.0.0.1:8000
 ```
 
-Saturu maina vienā failā — [`config/apps.js`](config/apps.js). Lauku apraksts ir
-izstrādes dokumentācijā.
+Saturu maina vienā failā — [`config/apps.js`](config/apps.js). Ja neesi
+izstrādātājs, sāc ar [Kā pievienot lietotni](docs/lv/pievienot-lietotni.md).
+
+## Testi
+
+Pati lapa ir bez atkarībām; `package.json` ir tikai testiem.
+
+```bash
+npm ci && npx playwright install chromium
+npm test                  # Playwright: attēlošana, pieejamība, konfigurācija
+npm run check:external    # neviena ārēja atsauce avota failos
+```
 
 ## Uzbūve
 
 ```
 index.html          lapas karkass
 config/apps.js      saturs: grupas un lietotnes
-app.js              attēlošana, tēmas slēdzis
-launchpad.css       bento režģis, flīzes, kājene
+app.js              attēlošana, tēmas un skata slēdži, tastatūra
+launchpad.css       bento režģis, flīzes, saraksta skats, kājene
 brand/              Sintakse dizaina sistēma + fonti
 vendor/             daisyUI + Tailwind CSS, lokāli
-docs/               dokumentācija (lv / en)
+test/               Playwright testi
+tools/              statiskās pārbaudes
+docs/               dokumentācija (lv / en), ADR, veiktspēja
 ```
+
+## Skati
+
+| Skats | Kā nokļūt |
+|---|---|
+| Režģis | noklusējums |
+| Saraksts | poga augšējā joslā |
+| Sienas ekrāns | `index.html?mode=wallboard` |
 
 ## Tehnoloģijas
 
@@ -47,8 +71,9 @@ Gilroy + Google Sans · vanilla JavaScript. Viss tiek pasniegts no šīs pašas
 mapes — lapa neveic nevienu ārēju pieprasījumu.
 
 > `brand/` ir nokopēts no dizaina sistēmas komplekta ar **vienu** apzinātu
-> izmaiņu: fontu imports norāda uz lokālo kopiju, nevis Google Fonts. Pārkopējot
-> sistēmu no jauna, šī rinda ir jāatjauno — sk. izstrādes dokumentāciju.
+> izmaiņu — sk. [ADR 0001](docs/adr/0001-patched-brand-font-import.md).
+> Visām projekta CSS klasēm ir priedēklis `lp-` — sk.
+> [ADR 0002](docs/adr/0002-lp-class-namespace.md).
 
 ## Pirms publicēšanas
 

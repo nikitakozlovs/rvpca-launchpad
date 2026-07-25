@@ -32,9 +32,12 @@ bloķēts, un tas piespiestu turēt serveri arī tur, kur tas nav vajadzīgs.
 ```
 index.html          lapas karkass
 config/apps.js      SATURS — vienīgais fails, ko parasti maina
-app.js              attēlošana, tēmas slēdzis
+app.js              attēlošana, tēmas un skata slēdži, tastatūra
 launchpad.css       bento režģis, flīzes, kājene
-brand/              dizaina sistēma, pārņemta (viena labota rinda, sk. zemāk)
+brand/              dizaina sistēma, pārņemta (viena labota rinda — ADR 0001)
+test/               Playwright testi
+tools/              statiskās pārbaudes
+docs/adr/           arhitektūras lēmumi
 vendor/             daisyUI + Tailwind, lokāli
 docs/               šī dokumentācija
 ```
@@ -57,21 +60,17 @@ sistēmas datu failiem (`assets/app-icons/systems-data.js` → `window.RIGA_SYST
 | Lauks | Tips | Apraksts |
 |---|---|---|
 | `id` | teksts | Iekšējs identifikators |
-| `title` | teksts | Grupas nosaukums. Ja tukšs → `Bez nosaukuma` |
-| `icon` | teksts | Font Awesome ikona blakus nosaukumam, piem. `fa-users`. Neobligāta |
-| `span` | `narrow` \| `wide` \| `full` | Cik platu grupa aizņem ārējo režģi |
-| `apps` | masīvs | Lietotnes. Ja tukšs, grupa netiek zīmēta vispār |
-
-### Lietotnes lauki
-
-| Lauks | Tips | Apraksts |
-|---|---|---|
-| `id` | teksts | Iekšējs identifikators |
 | `title` | teksts | **Obligāts.** Ja tukšs, tiek ņemts `id`; ja arī tā nav — flīze tiek izlaista |
 | `desc` | teksts | Viena rinda. Neobligāta |
 | `url` | teksts | Adrese. Ja tukša, flīze netiek padarīta par saiti |
 | `size` | `sm` \| `md` \| `lg` | Flīzes platums. Noklusējums `md` |
+| `order` | skaitlis | Kārtība grupā. Bez tā paliek konfigurācijas secība |
 | `status` | `pieejama` \| `izstrade` | Noklusējums `pieejama` |
+| `env` | `test` \| `demo` | Vides nozīmīte. Ražošanas vide netiek atzīmēta |
+| `added` | `YYYY-MM-DD` | 30 dienas rāda nozīmīti "Jauns", tad tā pazūd pati |
+| `owner` | teksts | Atbildīgā nodaļa vai cilvēks |
+| `contact` | e-pasts | Kļūst par `mailto:` saiti flīzē |
+| `accessUrl` | adrese | Saite "Piekļuve" piekļuves pieprasīšanai |
 | `mark` | ceļš | Zīmēts produkta marķējums |
 | `markMuted` | ceļš | Vienkrāsainā versija, ko lieto `izstrade` stāvoklī |
 | `mono` | divi burti | Plakanā monogramma, ja `mark` nav |
@@ -173,6 +172,73 @@ aizpilda caurumus, ja vēlāk sarakstā ir kaut kas mazāks.
 Blīvums ir responsīvais slēdzis: virs 1024px lapa lieto dizaina sistēmas `.airy`
 vērtības, zem tā — komfortablo noklusējumu. Tas ir viens mediju vaicājums, nevis
 atsevišķs mobilais CSS.
+
+## Skati un režīmi
+
+**Režģis** (noklusējums) — bento siena.
+**Saraksts** — blīvas rindas, pogas augšējā joslā. Izvēle tiek atcerēta
+`localStorage` atslēgā `rvpca-view`. Blīvumu dod dizaina sistēmas `.dense`
+vērtības, nevis atsevišķs izmēru komplekts.
+
+**Sienas ekrāns** — `index.html?mode=wallboard`. Lielāks mērogs, bez augšējās
+joslas, kājenes un sekundārajām saitēm. Domāts televizoram gaitenī; kioska
+režīmā adrese ar parametru ir viss, kas jāiestata.
+
+## Tastatūra
+
+`Tab` iet cauri **visām** flīzēm parastajā secībā. Bultiņas ir papildinājums:
+pa kreisi un pa labi pēc secības, augšup un lejup ģeometriski, `Home` un `End`
+uz malām.
+
+Apzināta atkāpe: bieži lietotais paņēmiens ir *roving tabindex*, kur režģī ir
+tikai viena tabulējama flīze un pārējās sasniedz tikai ar bultiņām. Tas ir
+pareizi saliktam vadīklu blokam, bet šī lapa ir dokuments ar saitēm, un tāda
+izvēle atņemtu `Tab` pieeju astoņām no deviņām lietotnēm ikvienam, kas šo
+paņēmienu nezina. Tāpēc bultiņas te tikai pievieno, neko neatņemot.
+
+## Pieejamība
+
+`npm test` ietver axe-core pārbaudi trijos stāvokļos (gaišais, tumšais,
+saraksta skats), pieejamības koka pārbaudi un kontrasta mērījumus.
+
+**Automātiskā pārbaude atrod aptuveni trešdaļu problēmu.** Tā neaizstāj
+pārbaudi ar īstu ekrānlasītāju (NVDA, VoiceOver) — īpaši izstrādē esošo flīžu
+gadījumā, kur `role="link"` un `aria-disabled` kombinācija dažādos lasītājos
+skan atšķirīgi. Pirms publicēšanas ražošanas vidē to vajadzētu izdarīt cilvēkam.
+
+Kas jau ir ievērots:
+
+- Flīzes nosaukums ir saites pieejamais nosaukums; apraksts un nozīmītes
+  piesaistītas caur `aria-describedby`
+- Izstrādē esošā flīze nolasās kā `link [disabled]`
+- Fokusa gredzens tiek zīmēts ap visu karti, nevis ap tekstu
+- Tēmas un skata maiņa tiek paziņota `aria-live` apgabalā
+- `prefers-contrast: more` pastiprina matlīnijas un noņem klusinātos toņus
+- `prefers-reduced-motion: reduce` noņem pacēlumus un pārejas
+
+Etiķetēs nosaukums vienmēr stāv aiz kola un paliek nominatīvā — latviešu
+locījumu no patvaļīga nosaukuma ģenerēt nevar, un "Atvērt Sagāde jaunā cilnē"
+būtu gramatiski nepareizi.
+
+## Testi
+
+```bash
+npm ci                    # tikai testiem; pati lapa ir bez atkarībām
+npx playwright install chromium
+npm test                  # visi testi
+npm run check:external    # ātrā statiskā pārbaude
+npm run perf              # Lighthouse (vajag palaistu `npm run serve`)
+```
+
+| Fails | Ko pārbauda |
+|---|---|
+| `test/offline.spec.mjs` | Nulle ārējo pieprasījumu, fonti, `file://` |
+| `test/render.spec.mjs` | Grupas, flīzes, nozīmītes, skati, responsivitāte |
+| `test/a11y.spec.mjs` | axe-core, pieejamības koks, kontrasts, tastatūra |
+| `test/config.spec.mjs` | Bojāta konfigurācija nenogāž lapu |
+
+Veiktspējas atskaites punkts: [`docs/perf-baseline.md`](../perf-baseline.md).
+Arhitektūras lēmumi: [`docs/adr/`](../adr/README.md).
 
 ## `brand/` ir pārņemts, nevis rakstīts
 

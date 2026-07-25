@@ -47,20 +47,42 @@ version and the text is quietened.
 When the system becomes available, the tile turns into an ordinary, launchable
 tile.
 
+## Badges
+
+| Badge | What it means |
+|---|---|
+| **IZSTRĀDĒ** | Still being built. The tile is visible but will not open |
+| **TESTA VIDE** | Not the real system. The data in it is not real |
+| **JAUNS** | Added within the last month |
+
+## Who to ask
+
+Each tile shows the responsible department at the bottom. Click it and an email
+opens. Write there if the system will not open, or if you need access.
+
+If a tile has a **Piekļuve** link, it leads to a request form — access to that
+system is granted separately.
+
+## Views
+
+There are two buttons in the top bar.
+
+**List / grid.** The grid shows large tiles; the list compresses everything into
+dense rows so more fits on screen. Your choice is remembered.
+
+**Moon / sun.** Switches light and dark. Also remembered.
+
 ## Keyboard
 
 | Key | Action |
 |---|---|
 | `Tab` | Move between tiles |
+| Arrow keys | Move around the grid faster |
+| `Home` / `End` | Jump to the first or last app |
 | `Enter` | Open the focused tile |
 
-## Light and dark
-
-At the right of the top bar is a moon / sun button. It switches the launchpad
-between light (paper) and dark (Midsummer-night blue).
-
-Your choice is remembered in this browser, so the launchpad opens the way you
-left it.
+To open an app in a second tab, use middle-click or `Ctrl` + click (`Cmd` +
+click on Mac). Each tile also carries a separate icon for the same thing.
 
 ## On phone and tablet
 

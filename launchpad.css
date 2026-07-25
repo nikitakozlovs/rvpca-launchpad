@@ -266,6 +266,28 @@ body {
   color: var(--accent);
 }
 
+/* Virsraksts ir enkurs uz grupu — konkrētu sadaļu var iesūtīt kolēģim. */
+.lp-group__anchor {
+  position: relative;
+  color: inherit;
+  text-decoration: none;
+}
+/* Ārpus plūsmas: `opacity: 0` vien atstātu tukšumu starp ikonu un
+   virsrakstu arī tad, kad zīme nav redzama. */
+.lp-group__anchor::after {
+  content: '#';
+  position: absolute;
+  left: 100%;
+  margin-left: 6px;
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity var(--dur-quick) var(--ease-out);
+}
+@media (hover: hover) {
+  .lp-group__head:hover .lp-group__anchor::after,
+  .lp-group__anchor:focus-visible::after { opacity: 1; }
+}
+
 .lp-group__title {
   margin: 0;
   font-family: var(--font-display);
@@ -279,7 +301,9 @@ body {
   margin-left: auto;
   font-family: var(--font-mono);
   font-size: var(--d-text-meta);
-  color: var(--fg-subtle);
+  /* Bija --fg-subtle (smilšu pelēkais) — uz papīra fona tas nesasniedza
+     WCAG AA. Skaitlis ir informācija, tāpēc tas ir --fg-muted. */
+  color: var(--fg-muted);
 }
 
 .lp-group__grid {
@@ -298,8 +322,11 @@ body {
 
 /* ---------- flīze ---------- */
 
-/* Karte: balts laukums, 1px apmale, bez ēnas. */
+/* Karte: balts laukums, 1px apmale, bez ēnas.
+   `position: relative` ir obligāts — pret to tiek pozicionēts
+   nosaukuma saites ::after pārklājums. */
 .lp-tile__inner {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--sp-3);
@@ -315,14 +342,42 @@ body {
               transform var(--dur-base) var(--ease-out);
 }
 
+/* Nosaukuma saite pārklāj visu karti, tāpēc klikšķis jebkur kartē
+   palaiž lietotni — bet kartē var būt arī citas saites (kontakts,
+   piekļuve, jauna cilne), kas nebūtu iespējams, ja karte pati būtu <a>. */
+.lp-tile__link {
+  color: inherit;
+  text-decoration: none;
+}
+.lp-tile__link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.lp-tile__link:focus-visible {
+  outline: none;
+}
+/* Fokusa gredzens tiek zīmēts ap visu karti, nevis ap tekstu — tā
+   redzams, kas tiks atvērts. Gredzenu nekad nenoņemam. */
+.lp-tile__inner:has(.lp-tile__link:focus-visible) {
+  outline: 2px solid var(--rudzupuku-zilais);
+  outline-offset: 2px;
+}
+.dark .lp-tile__inner:has(.lp-tile__link:focus-visible) { outline-color: var(--accent); }
+
 /* Hover tikai tur, kur tas tiešām ir — citādi skārienekrānos
    flīzes paliek "iestrēgušas" hover stāvoklī. */
 @media (hover: hover) {
-  .lp-tile__inner[href]:hover {
+  .lp-tile__inner:has(a.lp-tile__link):hover {
     border-color: var(--line-strong);
     transform: translateY(-2px);
   }
   .lp-icon-button:hover { border-color: var(--line-strong); color: var(--fg); }
+  /* "Jaunā cilnē" parādās tikai uz kartes — mierīgs stāvoklis paliek tīrs. */
+  .lp-tile__action--tab { opacity: 0; }
+  .lp-tile__inner:hover .lp-tile__action--tab,
+  .lp-tile__action--tab:focus-visible { opacity: 1; }
 }
 
 .lp-tile__mark {
@@ -355,6 +410,7 @@ body {
 .lp-tile__body { display: flex; flex-direction: column; gap: 2px; }
 
 .lp-tile__title {
+  margin: 0;
   font-family: var(--font-display);
   font-weight: 600;
   font-size: clamp(var(--fs-base), 1.6vw, var(--fs-md));
@@ -363,12 +419,59 @@ body {
 }
 
 .lp-tile__desc {
+  margin: 0;
   color: var(--fg-muted);
   font-size: var(--d-text-meta);
   line-height: var(--lh-body);
 }
 
-.lp-tile__foot { margin-top: auto; padding-top: var(--sp-2); }
+/* Kājene tiek zīmēta vienmēr, arī tukša. Fiksēts minimālais augstums
+   nozīmē, ka visām rindas flīzēm ir vienāds iekšējais augstums, un
+   blakus karte ar nozīmīti vairs nestiepj pārējās ar tukšumu apakšā. */
+.lp-tile__foot {
+  margin-top: auto;
+  padding-top: var(--sp-3);
+  min-height: 26px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+.lp-tile__badges,
+.lp-tile__links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+/* Sekundārās saites stāv virs nosaukuma pārklājuma. */
+.lp-tile__action {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  color: var(--fg-muted);
+  font-size: var(--fs-xs);
+  text-decoration: none;
+  border-radius: var(--r-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color var(--dur-quick) var(--ease-out),
+              opacity var(--dur-base) var(--ease-out);
+}
+.lp-tile__action i { font-size: 12px; }
+.lp-tile__action--static { cursor: default; }
+@media (hover: hover) {
+  a.lp-tile__action:hover { color: var(--accent); }
+}
+.lp-tile__action--tab i { font-size: 13px; }
 
 /* Izmērs nes nozīmi: lielākā flīze saņem lielāku marķējumu un
    virsrakstu, nevis tikai vairāk tukšuma. */
@@ -411,6 +514,26 @@ body {
   white-space: nowrap;
 }
 
+/* Vides nozīmītes. Dakstiņu sarkanais paliek rezervēts iznīcinošām
+   darbībām un kļūdām, tāpēc testa vide ir debesu zila, nevis sarkana. */
+.lp-pill--test {
+  border-color: transparent;
+  background: var(--accent-soft);
+  color: var(--janu-nakts-zilais);
+}
+.lp-pill--demo {
+  border-color: var(--line-strong);
+  background: transparent;
+  color: var(--fg-muted);
+}
+
+/* "Jauns kopš pēdējās reizes" — gurķīšu zaļais, kā to nosaka zīmols. */
+.lp-pill--new {
+  border-color: transparent;
+  background: var(--positive-soft);
+  color: var(--priezu-zalais);
+}
+
 /* ---------- izstrādes stāvoklis ---------- */
 
 /* Redzama, bet nepalaižama flīze. Nav <a>, nav href — tātad nav
@@ -421,10 +544,12 @@ body {
   cursor: default;
 }
 .lp-tile--izstrade .lp-tile__title { color: var(--fg-muted); }
-.lp-tile--izstrade .lp-tile__desc { color: var(--fg-subtle); }
+.lp-tile--izstrade .lp-tile__desc { color: var(--fg-muted); }
 .lp-tile--izstrade .lp-tile__mono {
   background: var(--smilsu-pelekais);
-  color: var(--bg-alt);
+  /* Tinte ir tumša abās tēmās: balts uz smilšu pelēkā deva 2.04:1,
+     kas ir krietni zem AA. Jāņu nakts zilais uz tā paša fona dod ~8.5:1. */
+  color: var(--janu-nakts-zilais);
 }
 
 /* ---------- kājene ---------- */
@@ -455,7 +580,7 @@ body {
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: var(--tracking-mega);
-  color: var(--fg-subtle);
+  color: var(--fg-muted);
 }
 
 .lp-techlist {
@@ -526,7 +651,7 @@ body {
   gap: var(--sp-2);
   margin: 0;
   font-size: var(--fs-xs);
-  color: var(--fg-subtle);
+  color: var(--fg-muted);
 }
 .lp-footer__credit i { color: var(--accent); font-size: 13px; }
 .lp-footer__credit a {
@@ -540,12 +665,127 @@ body {
 
 /* ---------- tukšs rezultāts ---------- */
 
+/* Tukšais stāvoklis ar unDraw ilustrāciju. Zīmola noteikumi: viena
+   ilustrācija, centrēta, ne platāka par 280px, viens akcents. */
 .lp-empty {
-  margin: var(--sp-8) 0 0;
+  margin: var(--sp-8) auto 0;
+  max-width: 46ch;
   text-align: center;
   color: var(--fg-muted);
   font-size: var(--d-text-body);
 }
+.lp-empty__art {
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  margin: 0 auto var(--sp-6);
+  display: block;
+}
+.lp-empty__title {
+  margin: 0 0 var(--sp-2);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-lg);
+  letter-spacing: var(--tracking-tight);
+  color: var(--fg);
+}
+.lp-empty__hint { margin: 0; font-size: var(--d-text-meta); }
+
+/* ============================================================
+   SARAKSTA SKATS
+   Blīvs, viena kolonna, marķējums mazāks. Domāts tiem, kas zina, ko
+   meklē, un grib redzēt visu uzreiz. Blīvumu dod dizaina sistēmas
+   pašas `.dense` vērtības, nevis atsevišķs izmēru komplekts.
+   ============================================================ */
+
+.lp-view-list .lp-board {
+  --d-card-pad:    12px;
+  --d-card-radius: var(--r-1);
+  --d-text-body:   14px;
+  --d-text-meta:   12px;
+  --d-line-h-body: 1.4;
+  gap: var(--sp-6) var(--sp-5);
+}
+.lp-view-list .lp-group,
+.lp-view-list .lp-tile,
+.lp-view-list .lp-tile--sm,
+.lp-view-list .lp-tile--md,
+.lp-view-list .lp-tile--lg { grid-column: 1 / -1; }
+
+.lp-view-list .lp-group__grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
+
+/* Rindas, nevis kartes: kopīga apmale starp ierakstiem. */
+.lp-view-list .lp-tile + .lp-tile .lp-tile__inner { border-top: 0; }
+.lp-view-list .lp-tile__inner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: 'mark body foot';
+  align-items: center;
+  column-gap: var(--sp-4);
+  border-radius: 0;
+  transform: none !important;
+}
+.lp-view-list .lp-tile:first-child .lp-tile__inner {
+  border-radius: var(--r-2) var(--r-2) 0 0;
+}
+.lp-view-list .lp-tile:last-child .lp-tile__inner {
+  border-radius: 0 0 var(--r-2) var(--r-2);
+}
+.lp-view-list .lp-tile__mark,
+.lp-view-list .lp-tile__mono {
+  grid-area: mark;
+  width: 28px;
+  height: 28px;
+  font-size: 12px;
+}
+.lp-view-list .lp-tile__body {
+  grid-area: body;
+  flex-direction: row;
+  align-items: baseline;
+  gap: var(--sp-4);
+}
+.lp-view-list .lp-tile__title { font-size: var(--fs-sm); flex: none; }
+.lp-view-list .lp-tile__desc {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lp-view-list .lp-tile__foot {
+  grid-area: foot;
+  margin-top: 0;
+  padding-top: 0;
+  min-height: 0;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+}
+
+/* ============================================================
+   SIENAS EKRĀNA REŽĪMS — index.html?mode=wallboard
+   Televizoram gaitenī: lielāks mērogs, bez hroma, bez saskarnes
+   pogām. Blīvums no dizaina sistēmas `.airy` tvēruma.
+   ============================================================ */
+
+.lp-wallboard {
+  --d-card-pad:    32px;
+  --d-card-radius: var(--r-3);
+  --d-text-body:   20px;
+  --d-text-meta:   16px;
+  --d-line-h-body: 1.65;
+}
+.lp-wallboard .lp-topbar,
+.lp-wallboard .lp-footer,
+.lp-wallboard .lp-tile__links,
+.lp-wallboard .lp-skip-link { display: none; }
+
+.lp-wallboard .lp-page { max-width: none; padding: var(--sp-7) var(--sp-7) var(--sp-8); }
+.lp-wallboard .lp-page__title { font-size: clamp(var(--fs-2xl), 6vw, var(--fs-4xl)); }
+.lp-wallboard .lp-page__lead { font-size: var(--fs-lg); max-width: none; }
+.lp-wallboard .lp-group__title { font-size: clamp(var(--fs-lg), 3vw, var(--fs-2xl)); }
+.lp-wallboard .lp-tile__title { font-size: clamp(var(--fs-md), 2.4vw, var(--fs-xl)); }
+.lp-wallboard .lp-tile__mark,
+.lp-wallboard .lp-tile__mono { width: 72px; height: 72px; font-size: 28px; }
+.lp-wallboard .lp-tile--lg .lp-tile__mark,
+.lp-wallboard .lp-tile--lg .lp-tile__mono { width: 96px; height: 96px; font-size: 38px; }
 
 /* ============================================================
    RESPONSĪVIE PĀRTRAUKUMI
@@ -594,6 +834,29 @@ body {
     min-height: 44px;
   }
   .lp-icon-button { min-width: 44px; }
+}
+
+/* Paaugstināts kontrasts: matlīnijas kļūst redzamas, klusinātais
+   teksts atgriežas pie pamattoņa, un neviena informācija nepaliek
+   tikai smilšu pelēkajā. */
+@media (prefers-contrast: more) {
+  :root {
+    --line: rgba(0, 11, 64, 0.45);
+    --line-strong: rgba(0, 11, 64, 0.75);
+    --fg-muted: var(--janu-nakts-zilais);
+    --fg-subtle: var(--novembra-pelekais);
+  }
+  .dark {
+    --line: rgba(244, 237, 226, 0.45);
+    --line-strong: rgba(244, 237, 226, 0.8);
+    --fg-muted: var(--papira);
+    --fg-subtle: rgba(244, 237, 226, 0.8);
+  }
+  .lp-tile__inner { border-width: 2px; }
+  .lp-pill { border-width: 2px; }
+  .lp-tile--izstrade .lp-tile__inner { border-style: solid; }
+  .lp-group__anchor::after { opacity: 1; }
+  .lp-tile__action--tab { opacity: 1 !important; }
 }
 
 /* Samazināta kustība: nost ar pacēlumiem un pārejām. */

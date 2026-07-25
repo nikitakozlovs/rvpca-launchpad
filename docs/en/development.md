@@ -36,7 +36,10 @@ index.html          page shell
 config/apps.js      CONTENT — normally the only file you edit
 app.js              rendering, filter, theme toggle
 launchpad.css       bento grid, tiles, footer
-brand/              the design system, vendored (one patched line, see below)
+brand/              the design system, vendored (one patched line — ADR 0001)
+test/               Playwright tests
+tools/              static checks
+docs/adr/           architecture decision records
 vendor/             daisyUI + Tailwind, self-hosted
 docs/               this documentation
 ```
@@ -59,21 +62,17 @@ system's own data files (`assets/app-icons/systems-data.js` → `window.RIGA_SYS
 | Field | Type | Description |
 |---|---|---|
 | `id` | string | Internal identifier |
-| `title` | string | Group name. Empty → `Bez nosaukuma` |
-| `icon` | string | Font Awesome icon beside the title, e.g. `fa-users`. Optional |
-| `span` | `narrow` \| `wide` \| `full` | How much of the outer grid the group takes |
-| `apps` | array | Apps. If empty, the group is not drawn at all |
-
-### App fields
-
-| Field | Type | Description |
-|---|---|---|
-| `id` | string | Internal identifier |
 | `title` | string | **Required.** Falls back to `id`; with neither, the tile is skipped |
 | `desc` | string | One line. Optional |
 | `url` | string | Address. If empty, the tile is not made into a link |
 | `size` | `sm` \| `md` \| `lg` | Tile width. Defaults to `md` |
+| `order` | number | Order within the group. Without it, config order stands |
 | `status` | `pieejama` \| `izstrade` | Defaults to `pieejama` (available) |
+| `env` | `test` \| `demo` | Environment badge. Production is not badged |
+| `added` | `YYYY-MM-DD` | Shows a "Jauns" badge for 30 days, then it lapses by itself |
+| `owner` | string | Responsible department or person |
+| `contact` | email | Becomes a `mailto:` link on the tile |
+| `accessUrl` | url | A "Piekļuve" link for requesting access |
 | `mark` | path | Drawn product mark |
 | `markMuted` | path | Single-colour version, used in the `izstrade` state |
 | `mono` | two letters | Flat monogram, when there is no `mark` |
@@ -174,6 +173,74 @@ holes when something smaller appears later in the list.
 Density is the responsive lever: above 1024px the page uses the design system's
 `.airy` values, below it the comfortable default. That is one media query, not a
 separate mobile stylesheet.
+
+## Views and modes
+
+**Grid** (default) — the bento wall.
+**List** — dense rows, toggled from the top bar. The choice is remembered in
+`localStorage` under `rvpca-view`. Density comes from the design system's
+`.dense` values rather than a separate set of sizes.
+
+**Wallboard** — `index.html?mode=wallboard`. Larger scale, no top bar, footer or
+secondary links. Meant for a TV in a corridor; in kiosk mode the URL with the
+parameter is the whole setup.
+
+## Keyboard
+
+`Tab` reaches **every** tile in the normal order. Arrow keys are an addition:
+left and right by sequence, up and down geometrically, `Home` and `End` to the
+ends.
+
+A deliberate deviation: the common pattern here is *roving tabindex*, where only
+one tile in the grid is tabbable and the rest are reachable by arrows alone.
+That is right for a composite widget, but this page is a document made of links,
+and that choice would take `Tab` access to eight of nine apps away from anyone
+who does not know the pattern. So arrows only add here; they take nothing away.
+
+## Accessibility
+
+`npm test` runs axe-core in three states (light, dark, list view), an
+accessibility-tree check, and contrast measurements.
+
+**Automated checking finds roughly a third of accessibility problems.** It does
+not replace testing with a real screen reader (NVDA, VoiceOver) — especially for
+the in-development tiles, where the `role="link"` plus `aria-disabled`
+combination is announced differently across readers. That should be done by a
+person before this goes to production.
+
+What is already handled:
+
+- The tile title is the link's accessible name; description and badges are tied
+  to it through `aria-describedby`
+- An in-development tile reads as `link [disabled]`
+- The focus ring is drawn around the whole card, not the text
+- Theme and view changes are announced in an `aria-live` region
+- `prefers-contrast: more` strengthens hairlines and drops muted tones
+- `prefers-reduced-motion: reduce` removes lifts and transitions
+
+In labels the app name always sits after a colon, in the nominative — Latvian
+declension cannot be generated from an arbitrary name, and "Atvērt Sagāde jaunā
+cilnē" would be grammatically wrong.
+
+## Tests
+
+```bash
+npm ci                    # tests only; the page itself has no dependencies
+npx playwright install chromium
+npm test                  # everything
+npm run check:external    # fast static check
+npm run perf              # Lighthouse (needs `npm run serve` running)
+```
+
+| File | What it covers |
+|---|---|
+| `test/offline.spec.mjs` | Zero external requests, fonts, `file://` |
+| `test/render.spec.mjs` | Groups, tiles, badges, views, responsiveness |
+| `test/a11y.spec.mjs` | axe-core, accessibility tree, contrast, keyboard |
+| `test/config.spec.mjs` | A malformed config does not take the page down |
+
+Performance baseline: [`docs/perf-baseline.md`](../perf-baseline.md).
+Architecture decisions: [`docs/adr/`](../adr/README.md).
 
 ## `brand/` is vendored, not authored
 

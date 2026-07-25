@@ -7,12 +7,32 @@
 <meta name="description" content="Rīgas valstspilsētas pašvaldības Centrālās administrācijas iekšējo lietotņu darbvirsma.">
 <link rel="icon" href="brand/assets/riga-keys.svg" type="image/svg+xml">
 
+<!-- Preload the faces needed for first paint. `crossorigin` is required even
+     same-origin — fonts are always fetched in anonymous CORS mode, and without
+     it the preload is discarded and fetched again. But a CORS-mode fetch under
+     file:// has an opaque origin and always fails, so the links are injected
+     only for http(s). Inline and early, so discovery still beats the CSS. -->
+<script>
+  if (location.protocol !== 'file:') {
+    [['font/woff',  'brand/fonts/Gilroy-SemiBold.woff'],
+     ['font/woff2', 'brand/fonts/google-sans/files/google-sans-latin-400-normal.woff2'],
+     ['font/woff2', 'brand/fonts/google-sans/files/google-sans-latin-ext-400-normal.woff2'],
+     ['font/woff2', 'brand/fonts/fontawesome/webfonts/fa-light-300.woff2']
+    ].forEach(function (f) {
+      var l = document.createElement('link');
+      l.rel = 'preload'; l.as = 'font'; l.type = f[0]; l.crossOrigin = 'anonymous'; l.href = f[1];
+      document.head.appendChild(l);
+    });
+  }
+</script>
+
 <!-- Load order is mandated by the Sintakse design system (see brand/styles.css):
      daisyUI stylesheet → Tailwind browser build → brand tokens → icons → page CSS.
      Both are self-hosted from vendor/ — the page makes no external requests. -->
 <link href="vendor/daisyui.css" rel="stylesheet" type="text/css">
 <script src="vendor/tailwindcss-browser.js"></script>
-<link rel="stylesheet" href="brand/styles.css">
+<link rel="stylesheet" href="brand/colors_and_type.css">
+<link rel="stylesheet" href="brand/daisyui-theme.css">
 <link rel="stylesheet" href="brand/fonts/fontawesome/css/fontawesome.css">
 <link rel="stylesheet" href="brand/fonts/fontawesome/css/light.css">
 <link rel="stylesheet" href="launchpad.css">
@@ -39,6 +59,10 @@
     </a>
 
     <div class="lp-topbar__tools">
+      <button type="button" id="view-toggle" class="lp-icon-button" aria-pressed="false">
+        <i class="fa-light fa-list" aria-hidden="true"></i>
+        <span class="sr-only">Rādīt sarakstu</span>
+      </button>
       <button type="button" id="theme-toggle" class="lp-icon-button" aria-pressed="false">
         <i class="fa-light fa-moon" aria-hidden="true"></i>
         <span class="sr-only">Pārslēgt tumšo režīmu</span>
@@ -55,8 +79,11 @@
 
   <div id="board" class="lp-board" tabindex="-1"></div>
 
-  <p id="empty" class="lp-empty" hidden></p>
+  <div id="empty" class="lp-empty" hidden></div>
 </main>
+
+<!-- Paziņojumi par stāvokļa maiņu, kas citādi ir tikai vizuāla. -->
+<p id="announce" class="sr-only" role="status" aria-live="polite"></p>
 
 <footer class="lp-footer">
   <div class="lp-footer__inner">

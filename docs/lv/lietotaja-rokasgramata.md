@@ -43,20 +43,42 @@ versijā, un teksts ir klusināts.
 
 Kad sistēma kļūst pieejama, flīze pārvēršas parastā, palaižamā flīzē.
 
+## Nozīmītes
+
+| Nozīmīte | Ko nozīmē |
+|---|---|
+| **IZSTRĀDĒ** | Sistēma vēl top. Flīze ir redzama, bet neatveras |
+| **TESTA VIDE** | Šī nav īstā sistēma. Dati tur nav īsti |
+| **JAUNS** | Pievienota pēdējā mēneša laikā |
+
+## Kam rakstīt
+
+Katrā flīzē apakšā ir atbildīgā nodaļa. Uzklikšķini uz tās — atvērsies e-pasta
+vēstule. Tur raksti, ja sistēma neatveras vai ja vajag piekļuvi.
+
+Ja flīzē ir saite **Piekļuve**, tā ved uz pieteikuma formu — piekļuvi šai
+sistēmai piešķir atsevišķi.
+
+## Skati
+
+Augšējā joslā ir divas pogas.
+
+**Saraksts / režģis.** Režģis rāda lielas flīzes; saraksts saspiež visu blīvās
+rindās, lai vairāk ietilptu ekrānā. Izvēle tiek atcerēta.
+
+**Mēness / saule.** Pārslēdz gaišo un tumšo režīmu. Arī tas tiek atcerēts.
+
 ## Tastatūra
 
 | Taustiņš | Darbība |
 |---|---|
 | `Tab` | Pārvietojas pa flīzēm |
+| Bultiņas | Pārvietojas pa režģi ātrāk |
+| `Home` / `End` | Uz pirmo vai pēdējo lietotni |
 | `Enter` | Atver flīzi, uz kuras ir kursors |
 
-## Gaišais un tumšais režīms
-
-Augšējā joslā pa labi ir mēness / saules poga. Tā pārslēdz darbvirsmu starp
-gaišo (papīra) un tumšo (Jāņu nakts zilo) režīmu.
-
-Izvēle tiek atcerēta šajā pārlūkā, tāpēc nākamreiz darbvirsma atvērsies tāda,
-kādu tu to atstāji.
+Lai atvērtu lietotni blakus cilnē, izmanto vidējo peles pogu vai `Ctrl` +
+klikšķi (`Cmd` + klikšķi uz Mac). Uz flīzes ir arī atsevišķa ikona tam pašam.
 
 ## Tālrunī un planšetē
 

@@ -47,24 +47,12 @@ version and the text is quietened.
 When the system becomes available, the tile turns into an ordinary, launchable
 tile.
 
-## Search
-
-The top bar has a search field. Type in it and the launchpad narrows to tiles
-whose title or description match. Groups with no matches are hidden.
-
-Shortcuts:
+## Keyboard
 
 | Key | Action |
 |---|---|
-| `/` | Jump to the search field from anywhere on the page |
-| `Esc` | Clear the search and restore the full list |
 | `Tab` | Move between tiles |
 | `Enter` | Open the focused tile |
-
-Diacritics are optional — searching `sagade` also finds *Sagāde*.
-
-If nothing matches, the page shows *"Nav atrasta neviena lietotne."* (No apps
-found.)
 
 ## Light and dark
 
@@ -76,9 +64,8 @@ left it.
 
 ## On phone and tablet
 
-The launchpad adapts to screen width. On a phone the tiles stack into one column
-and the search field moves below the title bar. All the content is the same —
-nothing is hidden away.
+The launchpad adapts to screen width. On a phone the tiles stack into one column.
+All the content is the same — nothing is hidden away.
 
 ## If something is missing
 

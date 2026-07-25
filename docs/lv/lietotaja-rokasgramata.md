@@ -43,24 +43,12 @@ versijā, un teksts ir klusināts.
 
 Kad sistēma kļūst pieejama, flīze pārvēršas parastā, palaižamā flīzē.
 
-## Meklēšana
-
-Augšējā joslā ir meklēšanas lauks. Raksti tajā, un darbvirsma atlasa tikai tās
-flīzes, kuru nosaukums vai apraksts sakrīt ar meklēto. Grupas, kurās nekas
-nesakrīt, tiek paslēptas.
-
-Ērtības pēc:
+## Tastatūra
 
 | Taustiņš | Darbība |
 |---|---|
-| `/` | Pārvieto kursoru uz meklēšanas lauku no jebkuras vietas lapā |
-| `Esc` | Notīra meklēto un atgriež visu sarakstu |
 | `Tab` | Pārvietojas pa flīzēm |
 | `Enter` | Atver flīzi, uz kuras ir kursors |
-
-Diakritiskās zīmes nav obligātas — meklējot `sagade`, tiks atrasta arī *Sagāde*.
-
-Ja nekas nesakrīt, parādās uzraksts *"Nav atrasta neviena lietotne."*
 
 ## Gaišais un tumšais režīms
 
@@ -72,9 +60,8 @@ kādu tu to atstāji.
 
 ## Tālrunī un planšetē
 
-Darbvirsma pielāgojas ekrāna platumam. Tālrunī flīzes sakārtojas vienā kolonnā,
-un meklēšanas lauks pārceļas zem nosaukuma joslas. Viss saturs ir tas pats —
-nekas netiek noslēpts.
+Darbvirsma pielāgojas ekrāna platumam. Tālrunī flīzes sakārtojas vienā kolonnā.
+Viss saturs ir tas pats — nekas netiek noslēpts.
 
 ## Ja kaut kā trūkst
 

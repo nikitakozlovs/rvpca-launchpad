@@ -28,9 +28,7 @@
   var TILE_SPAN  = { sm: 2, md: 3, lg: 6 };
 
   var board  = document.getElementById('board');
-  var input  = document.getElementById('filter');
   var empty  = document.getElementById('empty');
-  var status = document.getElementById('status');
   var topbar = document.getElementById('topbar');
   var toggle = document.getElementById('theme-toggle');
 
@@ -46,7 +44,7 @@
     return typeof value === 'string' ? value.trim() : '';
   }
 
-  /* Meklēšana bez diakritikas: "sagade" atrod "Sagāde". */
+  /* Diakritikas noņemšana — vajadzīga nozīmītes id atvasināšanai. */
   function fold(value) {
     return String(value)
       .toLowerCase()
@@ -134,9 +132,6 @@
     }
 
     tile.appendChild(inner);
-
-    /* Filtram — sameklējamais teksts sagatavots vienreiz. */
-    tile.dataset.haystack = fold(title + ' ' + desc);
     return tile;
   }
 
@@ -203,32 +198,6 @@
     });
   }
 
-  /* ---------- filtrs ---------- */
-
-  function applyFilter() {
-    var query = fold(input.value.trim());
-    var visible = 0;
-
-    board.querySelectorAll('.lp-group').forEach(function (group) {
-      var shown = 0;
-
-      group.querySelectorAll('.lp-tile').forEach(function (tile) {
-        var match = !query || tile.dataset.haystack.indexOf(query) !== -1;
-        tile.hidden = !match;
-        if (match) shown++;
-      });
-
-      group.hidden = shown === 0;
-      group.querySelector('.lp-group__count').textContent = String(shown);
-      visible += shown;
-    });
-
-    empty.hidden = visible !== 0;
-    status.textContent = query
-      ? visible + ' no ' + board.querySelectorAll('.lp-tile').length
-      : '';
-  }
-
   /* ---------- tēma ---------- */
 
   function setTheme(dark) {
@@ -247,24 +216,6 @@
 
   render();
   setTheme(document.documentElement.classList.contains('dark'));
-
-  input.addEventListener('input', applyFilter);
-
-  input.addEventListener('keydown', function (event) {
-    if (event.key === 'Escape') {
-      input.value = '';
-      applyFilter();
-      input.blur();
-    }
-  });
-
-  document.addEventListener('keydown', function (event) {
-    if (event.key === '/' && document.activeElement !== input) {
-      event.preventDefault();
-      input.focus();
-      input.select();
-    }
-  });
 
   toggle.addEventListener('click', function () {
     setTheme(!document.documentElement.classList.contains('dark'));

@@ -177,51 +177,6 @@ body {
   min-width: 0;
 }
 
-/* ---------- filtrs ---------- */
-
-.lp-filter {
-  position: relative;
-  display: flex;
-  align-items: center;
-  min-width: 0;
-}
-.lp-filter__icon,
-.lp-filter__hint {
-  position: absolute;
-  pointer-events: none;
-  color: var(--fg-subtle);
-}
-.lp-filter__icon { left: var(--sp-3); font-size: 14px; }
-.lp-filter__hint {
-  right: var(--sp-3);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  border: 1px solid var(--line);
-  border-radius: var(--r-1);
-  padding: 1px 5px;
-  line-height: 1.4;
-}
-.lp-filter__input {
-  width: 240px;
-  max-width: 100%;
-  height: var(--d-control-h);
-  min-height: 32px;
-  padding: 0 var(--sp-7) 0 var(--sp-6);
-  font-family: var(--font-body);
-  font-size: var(--d-text-meta);
-  color: var(--fg);
-  background: var(--bg-alt);
-  border: 1px solid var(--line);
-  border-radius: var(--r-2);
-  transition: border-color var(--dur-quick) var(--ease-out);
-}
-.lp-filter__input::placeholder { color: var(--fg-subtle); }
-.lp-filter__input:hover { border-color: var(--line-strong); }
-.lp-filter__input:focus { outline: 2px solid var(--rudzupuku-zilais); outline-offset: 2px; }
-.lp-filter__input:not(:placeholder-shown) ~ .lp-filter__hint { opacity: 0; }
-/* Slēpj pārlūka pašu "notīrīt" krustiņu — mums ir Esc. */
-.lp-filter__input::-webkit-search-cancel-button { -webkit-appearance: none; }
-
 .lp-icon-button {
   flex: none;
   display: inline-flex;
@@ -254,27 +209,6 @@ body {
   padding: var(--sp-6) 0 var(--sp-7);
   margin-bottom: var(--sp-6);
   border-bottom: 1px solid var(--line);
-}
-
-/* Tautiskā raksta faktūra — atvērtais variants zīmola noteiktajā
-   0.08–0.18 necaurspīdībā. Tikai aiz galvas; hroms paliek plakans.
-   Iekļauta kā data: URI tā paša iemesla dēļ, kas vārdzīme
-   (avots: brand/assets/patterns/riga-deconstruct-3.svg). */
-.lp-page__texture {
-  position: absolute;
-  inset: 0 0 1px auto;
-  width: min(420px, 45%);
-  pointer-events: none;
-  opacity: 0.08;
-  background-color: var(--fg);
-  -webkit-mask-image: url("data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%2264 64 512 512%22><path d=%22M269.9 65.3C269.9 133.5 269.9 201.7 269.9 269.9C303.3 269.9 336.7 269.9 370.2 269.9C370.2 303.3 370.2 336.8 370.2 370.2C336.8 370.2 303.4 370.2 269.9 370.2C269.9 438.4 269.9 506.6 269.9 574.8C303.3 574.8 336.7 574.8 370.2 574.8C370.2 506.6 370.2 438.4 370.2 370.2C438.3 370.2 506.5 370.2 574.6 370.2C574.6 336.8 574.6 303.3 574.6 269.9C506.5 269.9 438.3 269.9 370.2 269.9C370.2 201.7 370.2 133.5 370.2 65.3C336.8 65.3 303.4 65.3 269.9 65.3zM65.4 269.8C65.4 303.2 65.4 336.7 65.4 370.1C133.5 370.1 201.7 370.1 269.8 370.1C269.8 336.7 269.8 303.2 269.8 269.8C201.7 269.8 133.5 269.8 65.4 269.8z%22></path></svg>");
-  mask-image: url("data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%2264 64 512 512%22><path d=%22M269.9 65.3C269.9 133.5 269.9 201.7 269.9 269.9C303.3 269.9 336.7 269.9 370.2 269.9C370.2 303.3 370.2 336.8 370.2 370.2C336.8 370.2 303.4 370.2 269.9 370.2C269.9 438.4 269.9 506.6 269.9 574.8C303.3 574.8 336.7 574.8 370.2 574.8C370.2 506.6 370.2 438.4 370.2 370.2C438.3 370.2 506.5 370.2 574.6 370.2C574.6 336.8 574.6 303.3 574.6 269.9C506.5 269.9 438.3 269.9 370.2 269.9C370.2 201.7 370.2 133.5 370.2 65.3C336.8 65.3 303.4 65.3 269.9 65.3zM65.4 269.8C65.4 303.2 65.4 336.7 65.4 370.1C133.5 370.1 201.7 370.1 269.8 370.1C269.8 336.7 269.8 303.2 269.8 269.8C201.7 269.8 133.5 269.8 65.4 269.8z%22></path></svg>");
-  -webkit-mask-size: 72px 72px;
-  mask-size: 72px 72px;
-  -webkit-mask-repeat: repeat;
-  mask-repeat: repeat;
-  -webkit-mask-position: top right;
-  mask-position: top right;
 }
 
 .lp-page__title {
@@ -644,12 +578,7 @@ body {
   .lp-tile--md,
   .lp-tile--lg { grid-column: span 1; }
 
-  .lp-topbar__inner { flex-wrap: wrap; row-gap: var(--sp-2); }
-  .lp-topbar__tools { width: 100%; margin-left: 0; }
-  .lp-filter { flex: 1 1 auto; }
-  .lp-filter__input { width: 100%; }
   .lp-wordmark__text { font-size: var(--fs-base); }
-  .lp-page__texture { display: none; }
 
   .lp-footer__inner {
     padding: var(--sp-6) var(--sp-4) var(--sp-7);
@@ -661,7 +590,6 @@ body {
 /* Skārienierīces: 44px minimālais pieskāriena mērķis. Zīmola
    --d-control-h ir 32px, kas der pelei, bet ne īkšķim. */
 @media (pointer: coarse) {
-  .lp-filter__input,
   .lp-icon-button {
     min-height: 44px;
   }
@@ -682,6 +610,6 @@ body {
 
 /* Drukā: bez hroma, viss redzams. */
 @media print {
-  .lp-topbar, .lp-skip-link, .lp-page__texture { display: none; }
+  .lp-topbar, .lp-skip-link { display: none; }
   .lp-tile__inner { border-color: #999; }
 }

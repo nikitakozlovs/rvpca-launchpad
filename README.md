@@ -33,7 +33,7 @@ izstrādes dokumentācijā.
 ```
 index.html          lapas karkass
 config/apps.js      saturs: grupas un lietotnes
-app.js              attēlošana, filtrs, tēmas slēdzis
+app.js              attēlošana, tēmas slēdzis
 launchpad.css       bento režģis, flīzes, kājene
 brand/              Sintakse dizaina sistēma + fonti
 vendor/             daisyUI + Tailwind CSS, lokāli

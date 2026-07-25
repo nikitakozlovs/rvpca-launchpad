@@ -32,7 +32,7 @@ bloķēts, un tas piespiestu turēt serveri arī tur, kur tas nav vajadzīgs.
 ```
 index.html          lapas karkass
 config/apps.js      SATURS — vienīgais fails, ko parasti maina
-app.js              attēlošana, filtrs, tēmas slēdzis
+app.js              attēlošana, tēmas slēdzis
 launchpad.css       bento režģis, flīzes, kājene
 brand/              dizaina sistēma, pārņemta (viena labota rinda, sk. zemāk)
 vendor/             daisyUI + Tailwind, lokāli
@@ -151,7 +151,6 @@ Ko `status: 'izstrade'` maina:
   ekrānlasītājs to nolasa.
 - Ja ir norādīts `markMuted`, tiek lietota tā vietā `mark`.
 - Apmale kļūst pārtraukta, teksts klusināts.
-- Filtrā šādas lietotnes atrodamas tāpat kā visas pārējās.
 
 ## Režģis
 

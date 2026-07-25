@@ -39,19 +39,6 @@
     </a>
 
     <div class="lp-topbar__tools">
-      <div class="lp-filter">
-        <i class="fa-light fa-magnifying-glass lp-filter__icon" aria-hidden="true"></i>
-        <input
-          type="search"
-          id="filter"
-          class="lp-filter__input"
-          placeholder="Meklēt lietotni"
-          aria-label="Meklēt lietotni"
-          autocomplete="off"
-          spellcheck="false">
-        <kbd class="lp-filter__hint" aria-hidden="true">/</kbd>
-      </div>
-
       <button type="button" id="theme-toggle" class="lp-icon-button" aria-pressed="false">
         <i class="fa-light fa-moon" aria-hidden="true"></i>
         <span class="sr-only">Pārslēgt tumšo režīmu</span>
@@ -62,15 +49,13 @@
 
 <main class="lp-page">
   <div class="lp-page__head">
-    <div class="lp-page__texture" aria-hidden="true"></div>
     <h1 class="lp-page__title" id="page-title">Rīgas darbvirsma</h1>
     <p class="lp-page__lead" id="page-lead">Rīgas valstspilsētas pašvaldības iekšējās lietotnes.</p>
   </div>
 
   <div id="board" class="lp-board" tabindex="-1"></div>
 
-  <p id="empty" class="lp-empty" hidden>Nav atrasta neviena lietotne.</p>
-  <p id="status" class="sr-only" role="status" aria-live="polite"></p>
+  <p id="empty" class="lp-empty" hidden></p>
 </main>
 
 <footer class="lp-footer">

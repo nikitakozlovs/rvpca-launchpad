@@ -152,7 +152,6 @@ What `status: 'izstrade'` changes:
   screen readers announce it.
 - If `markMuted` is given, it is used instead of `mark`.
 - The border becomes dashed and the text is muted.
-- Such apps are still found by the filter, like any other.
 
 ## The grid
 

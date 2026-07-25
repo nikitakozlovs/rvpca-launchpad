@@ -59,7 +59,7 @@ system's own data files (`assets/app-icons/systems-data.js` → `window.RIGA_SYS
 |---|---|---|
 | `id` | string | Internal identifier |
 | `title` | string | Group name. Empty → `Bez nosaukuma` |
-| `glyph` | path | Ornament beside the title. Optional |
+| `icon` | string | Font Awesome icon beside the title, e.g. `fa-users`. Optional |
 | `span` | `narrow` \| `wide` \| `full` | How much of the outer grid the group takes |
 | `apps` | array | Apps. If empty, the group is not drawn at all |
 
@@ -113,6 +113,28 @@ Available families and their tones (`fill` / `ink`):
 With neither `mark` nor `mono`, the monogram is derived from the first two letters
 of the title and rendered in sand grey. That is why a malformed entry never takes
 the page down — it just looks neutral.
+
+## Group icons
+
+Group headers use **Font Awesome Pro Light**, the design system's functional icon
+vocabulary. The full Pro set is self-hosted under `brand/fonts/fontawesome/` — no
+Kit script and no domain allowlist.
+
+```js
+{ id: 'cilveki', title: 'Cilvēki', icon: 'fa-users', span: 'wide', apps: [ … ] }
+```
+
+The `fa-` prefix is optional (`users` and `fa-users` both work). The Light style is
+applied for you; do not put `fa-light` in the value.
+
+To check a name exists before using it:
+
+```bash
+grep -c '\.fa-users {' brand/fonts/fontawesome/css/fontawesome.css   # 1 = present
+```
+
+Note that the key glyphs in `brand/assets/` are **not** used here. The design
+system reserves them for ornament and gives functional icons to Font Awesome.
 
 ## The in-development state
 

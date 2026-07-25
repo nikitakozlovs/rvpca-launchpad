@@ -9,6 +9,9 @@
    (assets/app-icons/systems-data.js → window.RIGA_SYSTEMS), lai
    lapa strādātu arī tieši no faila, bez tīmekļa servera.
 
+   Grupu ikonas: Font Awesome Pro Light nosaukums, piem. 'fa-users'.
+   Pilns komplekts ir brand/fonts/fontawesome/.
+
    Pilns lauku apraksts: docs/lv/izstrade.md
    Full field reference:  docs/en/development.md
 
@@ -24,7 +27,7 @@ window.RVPCA_LAUNCHPAD = {
     {
       id: 'iepirkumi',
       title: 'Iepirkumi un finanses',
-      glyph: 'brand/assets/riga-deconstruct-1.svg',
+      icon: 'fa-file-contract',
       span: 'wide',
       apps: [
         {
@@ -52,7 +55,7 @@ window.RVPCA_LAUNCHPAD = {
     {
       id: 'cilveki',
       title: 'Cilvēki',
-      glyph: 'brand/assets/riga-deconstruct-4.svg',
+      icon: 'fa-users',
       span: 'wide',
       apps: [
         {
@@ -88,7 +91,7 @@ window.RVPCA_LAUNCHPAD = {
     {
       id: 'parvaldiba',
       title: 'Pārvaldība un rīki',
-      glyph: 'brand/assets/riga-deconstruct-5.svg',
+      icon: 'fa-sliders',
       span: 'full',
       apps: [
         {

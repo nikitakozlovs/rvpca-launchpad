@@ -57,7 +57,7 @@ sistēmas datu failiem (`assets/app-icons/systems-data.js` → `window.RIGA_SYST
 |---|---|---|
 | `id` | teksts | Iekšējs identifikators |
 | `title` | teksts | Grupas nosaukums. Ja tukšs → `Bez nosaukuma` |
-| `glyph` | ceļš | Ornaments blakus nosaukumam. Neobligāts |
+| `icon` | teksts | Font Awesome ikona blakus nosaukumam, piem. `fa-users`. Neobligāta |
 | `span` | `narrow` \| `wide` \| `full` | Cik platu grupa aizņem ārējo režģi |
 | `apps` | masīvs | Lietotnes. Ja tukšs, grupa netiek zīmēta vispār |
 
@@ -112,6 +112,28 @@ Pieejamās saimes un to toņi (`fill` / `ink`):
 Ja nav ne `mark`, ne `mono`, monogramma tiek atvasināta no nosaukuma pirmajiem
 diviem burtiem un krāsota smilšu pelēkā. Tāpēc bojāts ieraksts nekad nenogāž
 lapu — tas tikai izskatās neitrāls.
+
+## Grupu ikonas
+
+Grupu virsraksti lieto **Font Awesome Pro Light** — dizaina sistēmas funkcionālo
+ikonu vārdnīcu. Pilnais Pro komplekts ir novietots lokāli mapē
+`brand/fonts/fontawesome/`, bez Kit skripta un bez domēnu atļauju saraksta.
+
+```js
+{ id: 'cilveki', title: 'Cilvēki', icon: 'fa-users', span: 'wide', apps: [ … ] }
+```
+
+Priedēklis `fa-` nav obligāts (der gan `users`, gan `fa-users`). Light stils tiek
+pielikts automātiski — `fa-light` vērtībā rakstīt nevajag.
+
+Kā pārbaudīt, vai nosaukums eksistē:
+
+```bash
+grep -c '\.fa-users {' brand/fonts/fontawesome/css/fontawesome.css   # 1 = ir
+```
+
+Ņem vērā: atslēgu glifi mapē `brand/assets/` šeit **netiek** lietoti. Dizaina
+sistēma tos atvēl tikai ornamentam, bet funkcionālās ikonas — Font Awesome.
 
 ## Izstrādes stāvoklis
 

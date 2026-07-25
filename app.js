@@ -153,13 +153,13 @@
     section.style.setProperty('--group-span', span);
 
     var head = el('div', 'group__head');
-    var glyph = text(group.glyph);
-    if (glyph) {
-      var ornament = el('div', 'group__glyph');
-      ornament.setAttribute('aria-hidden', 'true');
-      ornament.style.webkitMaskImage = 'url("' + glyph + '")';
-      ornament.style.maskImage = 'url("' + glyph + '")';
-      head.appendChild(ornament);
+    /* Funkcionālās ikonas nāk no Font Awesome Pro Light — atslēgu
+       glifi paliek tikai ornamentam, kā to nosaka zīmola vadlīnijas. */
+    var icon = text(group.icon);
+    if (icon) {
+      var mark = el('i', 'fa-light ' + (icon.indexOf('fa-') === 0 ? icon : 'fa-' + icon) + ' group__icon');
+      mark.setAttribute('aria-hidden', 'true');
+      head.appendChild(mark);
     }
 
     var heading = el('h2', 'group__title');

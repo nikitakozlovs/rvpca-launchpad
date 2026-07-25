@@ -304,20 +304,15 @@ body {
   margin-bottom: var(--sp-5);
 }
 
-/* Zīmola atslēgas glifs kā sadaļas enkurs — tikai ornaments,
-   nekad funkcionāla ikona. Tonēts ar mask-image, kā KeyGlyph.jsx. */
-.group__glyph {
+/* Sadaļas ikona — Font Awesome Pro Light, 20px, kā to zīmola
+   vadlīnijas nosaka navigācijas līmeņa ikonām. */
+.group__icon {
   flex: none;
   width: 20px;
-  height: 20px;
-  background-color: var(--accent);
-  opacity: 0.55;
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
+  font-size: 18px;
+  line-height: 1;
+  text-align: center;
+  color: var(--accent);
 }
 
 .group__title {

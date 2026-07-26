@@ -53,6 +53,7 @@ brand/              Sintakse dizaina sistēma + fonti
 vendor/             daisyUI + Tailwind CSS, lokāli
 test/               Playwright testi
 tools/              statiskās pārbaudes
+deploy/             servera konfigurācijas paraugi (IIS / nginx / Apache)
 docs/               dokumentācija (lv / en), ADR, veiktspēja
 ```
 
@@ -74,6 +75,14 @@ mapes — lapa neveic nevienu ārēju pieprasījumu.
 > izmaiņu — sk. [ADR 0001](docs/adr/0001-patched-brand-font-import.md).
 > Visām projekta CSS klasēm ir priedēklis `lp-` — sk.
 > [ADR 0002](docs/adr/0002-lp-class-namespace.md).
+
+## Publicēšana
+
+Kopē `index.html`, `app.js`, `launchpad.css`, `config/`, `brand/`, `vendor/`.
+Nekas nav jābūvē.
+
+> **Ja lapa uzzīmējas, bet lietotņu karšu nav:** serveris visdrīzāk atdod `.js`
+> ar nepareizu MIME tipu. Sk. [`deploy/`](deploy/README.md).
 
 ## Pirms publicēšanas
 

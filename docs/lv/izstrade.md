@@ -255,6 +255,41 @@ Etiķetēs nosaukums vienmēr stāv aiz kola un paliek nominatīvā — latvieš
 locījumu no patvaļīga nosaukuma ģenerēt nevar, un "Atvērt Sagāde jaunā cilnē"
 būtu gramatiski nepareizi.
 
+## Publicēšana
+
+Darbvirsma ir statiski faili, tāpēc publicēšana nozīmē tos nokopēt. Nekas nav
+jābūvē.
+
+Kopē: `index.html`, `app.js`, `launchpad.css`, `config/`, `brand/`, `vendor/`.
+Nekopē: `test/`, `tools/`, `docs/`, `deploy/`, `node_modules/`, `package.json`,
+`playwright.config.mjs`, `.github/`.
+
+### Viens iestatījums, kas lapu salauž klusi
+
+Ja serveris `.js` failus atdod ar nepareizu MIME tipu (`text/plain`,
+`application/octet-stream`) **un** sūta `X-Content-Type-Options: nosniff`,
+pārlūks **atsakās izpildīt skriptus**. Lapa uzzīmējas — josla, kājene, krāsas,
+fonti — bet lietotņu kartes neparādās nekad. Serveris atbild 200, tāpēc tīkla
+kļūdu nav; klusē arī konsole, ja tajā neieskatās.
+
+Tas pats notiek, ja `app.js` vienkārši nav nokopēts.
+
+Tieši šo gadījumu sedz rezerves paziņojums lapā: `app.js` pirmajā rindā uzliek
+`<body>` klasi `lp-ready`, un CSS tikai tad paslēpj `.lp-boot` bloku. Ja skripti
+neizpildās, lietotājs redz paskaidrojumu, nevis tukšumu.
+
+### Pārbaude pēc publicēšanas
+
+```bash
+curl -sI https://darbvirsma.riga.lv/app.js         | grep -i 'HTTP\|content-type'
+curl -sI https://darbvirsma.riga.lv/config/apps.js | grep -i 'HTTP\|content-type'
+```
+
+Abiem jāatbild `200` un `content-type: text/javascript`.
+
+Gatavas servera konfigurācijas — IIS, nginx, Apache — ir mapē
+[`deploy/`](../../deploy/README.md).
+
 ## Testi
 
 ```bash

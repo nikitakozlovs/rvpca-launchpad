@@ -84,6 +84,23 @@
 
   <div id="board" class="lp-board" tabindex="-1"></div>
 
+  <!-- Redzams tikai tad, ja app.js NAV izpildījies. Skripts pirmajā rindā
+       uzliek uz <body> klasi lp-ready, un CSS šo bloku paslēpj. Ja skripti
+       neielādējas vai serveris tos atdod ar nepareizu MIME tipu, lapa citādi
+       paliktu tukša bez neviena paskaidrojuma. -->
+  <div class="lp-boot">
+    <p class="lp-boot__title">Lietotņu sarakstu neizdevās ielādēt.</p>
+    <p class="lp-boot__hint">
+      Lapas skripti netika izpildīti. Pārlādē lapu; ja tas nepalīdz, paziņo
+      izstrādes komandai.
+    </p>
+    <p class="lp-boot__admin">
+      Administratoram: pārbaudi, vai serveris atdod <code>app.js</code> un
+      <code>config/apps.js</code> ar statusu 200 un MIME tipu
+      <code>text/javascript</code>. Sk. docs/lv/izstrade.md → “Publicēšana”.
+    </p>
+  </div>
+
   <div id="empty" class="lp-empty" hidden></div>
 </main>
 

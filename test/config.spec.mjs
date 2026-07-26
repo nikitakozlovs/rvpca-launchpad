@@ -2,6 +2,49 @@ import { test, expect } from '@playwright/test';
 
 /* Konfigurāciju labo cilvēks rokām. Bojāts ieraksts drīkst izskatīties
    neitrāls, bet nedrīkst nogāzt visu lapu. */
+/* Divi publicēšanas gadījumi, kas reāli notikuši: skripti neizpildās vispār.
+   Tad neizpildās arī kļūdas apstrāde, tāpēc paskaidrojums ir jāieliek jau
+   HTML — citādi lietotājs redz tikai tukšu lapu. */
+test.describe('Skripti neizpildās', () => {
+  test('rezerves paziņojums ir redzams, ja app.js neielādējas', async ({ page, context }) => {
+    await context.route('**/app.js', route => route.fulfill({ status: 404, body: '' }));
+
+    await page.goto('/index.html');
+    await page.waitForTimeout(300);
+
+    /* Hroms ir vietā, kartes nav — un lietotājs redz, kāpēc. */
+    await expect(page.locator('.lp-topbar')).toBeVisible();
+    await expect(page.locator('.lp-tile')).toHaveCount(0);
+    await expect(page.locator('.lp-boot')).toBeVisible();
+    await expect(page.locator('.lp-boot__title')).toContainText('neizdevās ielādēt');
+  });
+
+  test('rezerves paziņojums parādās arī pie nepareiza MIME tipa', async ({ page, context }) => {
+    /* Ar nosniff pārlūks atsakās izpildīt skriptu, kas atdots kā text/plain.
+       Serveris atbild 200, tāpēc neviena tīkla kļūda to nenoķer. */
+    await context.route('**/*.js', async route => {
+      const r = await route.fetch();
+      await route.fulfill({
+        response: r,
+        headers: { ...r.headers(), 'content-type': 'text/plain', 'x-content-type-options': 'nosniff' },
+      });
+    });
+
+    await page.goto('/index.html');
+    await page.waitForTimeout(400);
+
+    await expect(page.locator('.lp-tile')).toHaveCount(0);
+    await expect(page.locator('.lp-boot')).toBeVisible();
+  });
+
+  test('kad skripti izpildās, rezerves paziņojums pazūd', async ({ page }) => {
+    await page.goto('/index.html');
+    await expect(page.locator('body')).toHaveClass(/lp-ready/);
+    await expect(page.locator('.lp-boot')).toBeHidden();
+    await expect(page.locator('.lp-tile')).toHaveCount(9);
+  });
+});
+
 test.describe('Bojāta konfigurācija', () => {
   test('nederīgi ieraksti tiek izlaisti, lapa paliek dzīva', async ({ page }) => {
     const errors = [];

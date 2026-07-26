@@ -13,6 +13,12 @@
 (function () {
   'use strict';
 
+  /* Pirmā darbība: atzīmē, ka skripts tiešām ir izpildījies. Uz šīs klases
+     karājas rezerves paziņojums index.html — ja skripti neielādējas (404 vai
+     nepareizs MIME tips ar nosniff), lapa citādi paliktu tukša bez neviena
+     paskaidrojuma. Sk. docs/lv/izstrade.md → "Publicēšana". */
+  document.body.classList.add('lp-ready');
+
   /* Toņu saimes no dizaina sistēmas — pieres laukums + monogrammas
      tinte, pārņemti no `stack` vērtībām systems-data.js. Lieto
      lietotnēm, kurām nav zīmēta produkta marķējuma. */
@@ -350,7 +356,8 @@
     var config = window.RVPCA_LAUNCHPAD;
     if (!config || !Array.isArray(config.groups)) {
       showEmpty('Konfigurācija nav ielādēta.',
-                'Pārbaudi, vai config/apps.js ir vietā un bez kļūdām.');
+                'config/apps.js netika izpildīts. Pārbaudi, vai fails ir '
+                + 'publicēts un vai serveris to atdod ar statusu 200.');
       return;
     }
 

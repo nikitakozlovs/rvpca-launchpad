@@ -256,6 +256,41 @@ In labels the app name always sits after a colon, in the nominative — Latvian
 declension cannot be generated from an arbitrary name, and "Atvērt Sagāde jaunā
 cilnē" would be grammatically wrong.
 
+## Deployment
+
+The launchpad is static files, so deploying means copying them. Nothing is built.
+
+Copy: `index.html`, `app.js`, `launchpad.css`, `config/`, `brand/`, `vendor/`.
+Do not copy: `test/`, `tools/`, `docs/`, `deploy/`, `node_modules/`,
+`package.json`, `playwright.config.mjs`, `.github/`.
+
+### The one setting that breaks the page silently
+
+If the server returns `.js` files with the wrong MIME type (`text/plain`,
+`application/octet-stream`) **and** sends `X-Content-Type-Options: nosniff`, the
+browser **refuses to execute the scripts**. The page renders — bar, footer,
+colours, fonts — but the app cards never appear. The server answers 200, so
+there is no network error, and nothing shows unless you open the console.
+
+The same happens if `app.js` simply was not copied.
+
+This is exactly what the in-page fallback covers: `app.js` puts the class
+`lp-ready` on `<body>` as its first action, and only then does CSS hide the
+`.lp-boot` block. If the scripts do not run, the user sees an explanation rather
+than emptiness.
+
+### Check after deploying
+
+```bash
+curl -sI https://darbvirsma.riga.lv/app.js         | grep -i 'HTTP\|content-type'
+curl -sI https://darbvirsma.riga.lv/config/apps.js | grep -i 'HTTP\|content-type'
+```
+
+Both must answer `200` with `content-type: text/javascript`.
+
+Ready-made server configs — IIS, nginx, Apache — are in
+[`deploy/`](../../deploy/README.md).
+
 ## Tests
 
 ```bash

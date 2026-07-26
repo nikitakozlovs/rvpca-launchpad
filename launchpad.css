@@ -638,6 +638,46 @@ body {
   .lp-footer__credit a:hover { border-bottom-color: currentColor; }
 }
 
+/* ---------- rezerves paziņojums ---------- */
+
+/* Redzams tikai tad, kad app.js nav izpildījies: skripts uzliek .lp-ready.
+   Tas ir vienīgais, kas atšķir "skripti neielādējās" no "konfigurācija
+   tukša" — pirmajā gadījumā neizpildās nekas, arī kļūdas paziņojums. */
+.lp-boot {
+  max-width: 60ch;
+  margin: var(--sp-7) auto;
+  padding: var(--sp-6);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-3);
+  background: var(--bg-alt);
+  text-align: center;
+}
+.lp-ready .lp-boot { display: none; }
+
+.lp-boot__title {
+  margin: 0 0 var(--sp-3);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-lg);
+  letter-spacing: var(--tracking-tight);
+}
+.lp-boot__hint {
+  margin: 0 0 var(--sp-5);
+  color: var(--fg-muted);
+}
+.lp-boot__admin {
+  margin: 0;
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--line);
+  color: var(--fg-muted);
+  font-size: var(--fs-xs);
+  text-align: left;
+}
+.lp-boot__admin code {
+  font-family: var(--font-mono);
+  font-size: 0.95em;
+}
+
 /* ---------- tukšs rezultāts ---------- */
 
 /* Tukšais stāvoklis ar unDraw ilustrāciju. Zīmola noteikumi: viena

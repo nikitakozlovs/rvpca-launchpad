@@ -1,0 +1,21 @@
+# Apache. Nolieciet darbvirsmas saknē.
+# Bez pareiza MIME tipa .js failiem kopā ar nosniff pārlūks skriptus
+# neizpilda un lapa paliek bez lietotņu kartēm.
+
+AddType text/javascript .js .mjs
+AddType text/css        .css
+AddType image/svg+xml   .svg
+AddType font/woff       .woff
+AddType font/woff2      .woff2
+
+DirectoryIndex index.html
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  <FilesMatch "\.(woff2?|svg|png)$">
+    Header set Cache-Control "public, max-age=2592000, immutable"
+  </FilesMatch>
+  <FilesMatch "^(index\.html|apps\.js)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>

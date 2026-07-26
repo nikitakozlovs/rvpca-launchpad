@@ -1,0 +1,27 @@
+# nginx. Galvenais: include mime.types — bez tā .js aiziet kā
+# application/octet-stream, un ar nosniff pārlūks skriptus neizpilda.
+
+server {
+    listen 443 ssl;
+    server_name darbvirsma.riga.lv;
+
+    root /var/www/rvpca-launchpad;
+    index index.html;
+
+    include mime.types;
+    default_type application/octet-stream;
+
+    types {
+        text/javascript js mjs;
+        font/woff2      woff2;
+        font/woff       woff;
+        image/svg+xml   svg;
+    }
+
+    add_header X-Content-Type-Options nosniff always;
+
+    # Saturs mainās ar katru izlaidumu; fonti un marķējumi ne.
+    location ~* \.(woff2?|svg|png)$ { expires 30d; add_header Cache-Control "public, immutable"; }
+    location = /config/apps.js     { expires -1;  add_header Cache-Control "no-cache"; }
+    location = /index.html         { expires -1;  add_header Cache-Control "no-cache"; }
+}

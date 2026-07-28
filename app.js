@@ -116,6 +116,44 @@
     return node;
   }
 
+  /* ---------- adrešu pārbaude ---------- */
+
+  /* Konfigurāciju rediģē cilvēks, un dokumentācija aicina to darīt arī
+     tiem, kas nav izstrādātāji. Tāpēc adresi nedrīkst likt <a href> tieši:
+     `javascript:...` nozīmētu, ka ikviens, kas drīkst papildināt sarakstu,
+     var izpildīt kodu katra darbinieka pārlūkā. Atļautas tikai šīs shēmas;
+     relatīvie ceļi un fragmenti shēmas nesatur un iet cauri. */
+  var SAFE_SCHEMES = ['http', 'https', 'mailto', 'tel'];
+
+  function safeUrl(value) {
+    var v = text(value);
+    if (!v) return '';
+    /* Kontrolsimboli un atstarpes var noslēpt shēmu: "java\tscript:alert(1)"
+       pārlūkam joprojām ir javascript:. Tāpēc pārbaudam notīrītu variantu. */
+    var probe = v.replace(/[\u0000-\u0020]+/g, '').toLowerCase();
+    var scheme = probe.match(/^([a-z][a-z0-9+.\-]*):/);
+    if (scheme && SAFE_SCHEMES.indexOf(scheme[1]) === -1) return '';
+    return v;
+  }
+
+  /* Attēliem papildus prasība: tikai no šīs pašas mapes. Ārēja adrese
+     `mark` laukā klusi salauztu solījumu, ka lapa neveic nevienu ārēju
+     pieprasījumu, un derētu kā izsekošanas pikselis. */
+  function safeAsset(value) {
+    var v = text(value);
+    if (!v) return '';
+    var probe = v.replace(/[\u0000-\u0020]+/g, '');
+    if (/^[a-z][a-z0-9+.\-]*:/i.test(probe) || probe.indexOf('//') === 0) return '';
+    return v;
+  }
+
+  /* Font Awesome nosaukums nonāk class atribūtā. Bez ierobežojuma tur var
+     ielikt jebkuru šīs lapas klasi un pārzīmēt izkārtojumu. */
+  function safeIcon(value) {
+    var v = text(value).replace(/^fa-/, '');
+    return /^[a-z0-9-]+$/.test(v) ? 'fa-' + v : '';
+  }
+
   function buildMono(app, title, inDev) {
     var family = FAMILIES[app.family];
     var mono = el('div', 'lp-tile__mono');
@@ -140,7 +178,7 @@
 
     var id         = text(app.id) || slug(title);
     var desc       = text(app.desc);
-    var url        = text(app.url);
+    var url        = safeUrl(app.url);
     var inDev      = app.status === 'izstrade';
     var size       = TILE_SPAN[app.size] ? app.size : 'md';
     var launchable = !inDev && url !== '';
@@ -153,7 +191,7 @@
     var card = el('div', 'lp-tile__inner');
 
     /* Marķējums: zīmēts produkta marķējums vai plakana monogramma. */
-    var mark = text(inDev && app.markMuted ? app.markMuted : app.mark);
+    var mark = safeAsset(inDev && app.markMuted ? app.markMuted : app.mark);
     if (mark) {
       var img = el('img', 'lp-tile__mark');
       img.src = mark;
@@ -243,7 +281,7 @@
       links.appendChild(newTab);
     }
 
-    var accessUrl = text(app.accessUrl);
+    var accessUrl = safeUrl(app.accessUrl);
     if (accessUrl) {
       var access = el('a', 'lp-tile__action');
       access.href = accessUrl;
@@ -255,12 +293,15 @@
 
     var owner = text(app.owner);
     var contact = text(app.contact);
+    /* Tikai īsta e-pasta adrese kļūst par saiti. Iepriekš viss, kam nebija
+       "@", nonāca href atribūtā tāds, kāds bija — arī `javascript:`. */
+    var mailable = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact);
     if (owner || contact) {
       var who = owner || contact;
       var node;
-      if (contact) {
+      if (mailable) {
         node = el('a', 'lp-tile__action');
-        node.href = (contact.indexOf('@') !== -1 ? 'mailto:' : '') + contact;
+        node.href = 'mailto:' + contact;
         node.setAttribute('aria-label', 'Atbildīgais: ' + who + ' (' + title + ')');
       } else {
         node = el('span', 'lp-tile__action lp-tile__action--static');
@@ -297,9 +338,9 @@
     var head = el('div', 'lp-group__head');
     /* Funkcionālās ikonas nāk no Font Awesome Pro Light — atslēgu
        glifi paliek tikai ornamentam, kā to nosaka zīmola vadlīnijas. */
-    var iconName = text(group.icon);
+    var iconName = safeIcon(group.icon);
     if (iconName) {
-      var glyph = icon(iconName.indexOf('fa-') === 0 ? iconName : 'fa-' + iconName);
+      var glyph = icon(iconName);
       glyph.classList.add('lp-group__icon');
       head.appendChild(glyph);
     }

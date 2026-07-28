@@ -6,8 +6,8 @@ English version: [`docs/en/development.md`](../en/development.md)
 
 ## Kas tas ir
 
-Statiska lapa **bez izpildlaika atkarībām un bez būvēšanas soļa**. Trīs
-autordarba faili (`index.html`, `launchpad.css`, `app.js`), viens
+Statiska lapa **bez izpildlaika atkarībām un bez būvēšanas soļa**. Četri
+autordarba faili (`index.html`, `boot.js`, `launchpad.css`, `app.js`), viens
 konfigurācijas fails, dizaina sistēma mapē `brand/` un divas trešo pušu
 bibliotēkas mapē `vendor/`.
 
@@ -35,6 +35,7 @@ bloķēts, un tas piespiestu turēt serveri arī tur, kur tas nav vajadzīgs.
 
 ```
 index.html          lapas karkass
+boot.js             fontu priekšielāde + tēma pirms pirmās zīmēšanas
 config/apps.js      SATURS — vienīgais fails, ko parasti maina
 app.js              attēlošana, tēmas un skata slēdži, tastatūra
 launchpad.css       bento režģis, flīzes, saraksta skats, kājene
@@ -260,7 +261,7 @@ būtu gramatiski nepareizi.
 Darbvirsma ir statiski faili, tāpēc publicēšana nozīmē tos nokopēt. Nekas nav
 jābūvē.
 
-Kopē: `index.html`, `app.js`, `launchpad.css`, `config/`, `brand/`, `vendor/`.
+Kopē: `index.html`, `boot.js`, `app.js`, `launchpad.css`, `config/`, `brand/`, `vendor/`.
 Nekopē: `test/`, `tools/`, `docs/`, `deploy/`, `node_modules/`, `package.json`,
 `playwright.config.mjs`, `.github/`.
 
@@ -290,6 +291,88 @@ Abiem jāatbild `200` un `content-type: text/javascript`.
 Gatavas servera konfigurācijas — IIS, nginx, Apache — ir mapē
 [`deploy/`](../../deploy/README.md).
 
+## Drošība
+
+Darbvirsma ir statiska lapa bez servera puses, bez autentifikācijas un bez
+lietotāju datiem. Uzbrukuma virsma ir maza, bet ne tukša.
+
+### Konfigurācija ir nedroša ievade
+
+`config/apps.js` rediģē cilvēks, un [Kā pievienot lietotni](pievienot-lietotni.md)
+aicina to darīt arī tiem, kas nav izstrādātāji. Tāpēc kods to **neuzskata par
+uzticamu**:
+
+| Lauks | Pārbaude |
+|---|---|
+| `url`, `accessUrl` | Tikai `http`, `https`, `mailto`, `tel`. Relatīvie ceļi un fragmenti iet cauri |
+| `contact` | Par saiti kļūst tikai tad, ja tā tiešām ir e-pasta adrese |
+| `mark`, `markMuted` | Tikai ceļi no šīs pašas mapes — nekādu shēmu, nekādu `//` |
+| `icon` | Tikai `[a-z0-9-]`, priedēklis `fa-` uzlikts pašu spēkiem |
+
+Bez šīm pārbaudēm ikviens, kas drīkst papildināt lietotņu sarakstu, varētu
+ielikt `javascript:` adresi un izpildīt kodu **katra darbinieka pārlūkā**.
+Sarakstā ir saites uz iekšējām sistēmām, tāpēc tāda adrese derētu arī
+pieteikšanās datu izkrāpšanai.
+
+Viss teksts DOM nonāk caur `textContent`. Failā nav ne `innerHTML`, ne `eval`,
+ne `document.write`.
+
+### Drošības galvenes
+
+`deploy/` konfigurācijas uzstāda:
+
+| Galvene | Vērtība | Kāpēc |
+|---|---|---|
+| `Content-Security-Policy` | sk. zemāk | Otrā aizsardzības līnija pret XSS |
+| `X-Frame-Options` | `DENY` | Darbvirsmu nevar ielikt rāmī un uzlikt virsū citu saskarni |
+| `X-Content-Type-Options` | `nosniff` | Sk. "Publicēšana" |
+| `Referrer-Policy` | `no-referrer` | Iekšējo sistēmu adreses nenoplūst uz ārpusi |
+| `Strict-Transport-Security` | 1 gads | |
+| `Permissions-Policy` | viss izslēgts | Lapai nevajag ne kameru, ne atrašanās vietu |
+
+Politika:
+
+```
+default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline';
+img-src 'self' data:; font-src 'self'; connect-src 'none';
+base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'
+```
+
+**`script-src` ir bez `'unsafe-inline'`, un tā tam jāpaliek.** Tieši tāpēc
+`boot.js` ir atsevišķs fails, nevis `<script>` bloks `index.html` iekšpusē.
+Tests pārbauda, ka lapā nav neviena inline skripta.
+
+`style-src` patur `'unsafe-inline'`, jo Tailwind pārlūka būvējums stilus
+pievieno izpildes laikā. Lapa izskatās tāpat arī bez tā — viss vajadzīgais ir
+`launchpad.css` — bet jebkura vēlāk pievienota Tailwind utilītklase klusi
+nenostrādātu. Ja Tailwind utilītas netiek lietotas, `'unsafe-inline'` var
+noņemt. Izkārtojums no tā necieš: `style.setProperty` ir CSSOM, ko CSP neierobežo.
+
+### Kas tiek pārbaudīts automātiski
+
+`test/security.spec.mjs` — katrs tests atbilst uzbrukumam, kas pirms labojuma
+tiešām izpildījās:
+
+- `javascript:`, `data:` un ar tabulāciju noslēptas adreses netiek izpildītas
+- `mark` nevar ievilkt ārēju resursu
+- `icon` nevar pievienot svešas klases
+- `target="_blank"` vienmēr ar `rel="noopener"`
+- lapā nav inline skriptu
+- lapa strādā ar to pašu stingro CSP, kas ir `deploy/` konfigurācijās
+
+### Kas paliek ārpus koda
+
+- **Piekļuves kontrole.** Darbvirsma nevienu neautentificē. Ja saraksts nav
+  domāts visiem, to ierobežo serveris vai tīkls.
+- **Repozitorija piekļuve.** Kas drīkst rediģēt `config/apps.js`, tas nosaka
+  saites uz iekšējām sistēmām. Adrešu pārbaudes neļauj izpildīt kodu, bet
+  neliedz norādīt uz nepareizu vietni — piekļuves tiesības ir īstā robeža.
+- **`vendor/` izcelsme.** daisyUI un Tailwind ir nokopēti no npm. Versijas ir
+  pierakstītas `vendor/README.md`, bet kontrolsummas nav — atjauninot der
+  pārliecināties, ka avots ir npm, nevis nejauša kopija.
+- **E-pasta adreses konfigurācijā** ir īstas nodaļu adreses. Tas ir apzināti,
+  bet ņem vērā, ja repozitorijs kādreiz kļūst publisks.
+
 ## Testi
 
 ```bash
@@ -306,6 +389,7 @@ npm run perf              # Lighthouse (vajag palaistu `npm run serve`)
 | `test/render.spec.mjs` | Grupas, flīzes, nozīmītes, skati, responsivitāte |
 | `test/a11y.spec.mjs` | axe-core, pieejamības koks, kontrasts, tastatūra |
 | `test/config.spec.mjs` | Bojāta konfigurācija nenogāž lapu |
+| `test/security.spec.mjs` | Adrešu pārbaudes, CSP, ārējo saišu higiēna |
 
 Veiktspējas atskaites punkts: [`docs/perf-baseline.md`](../perf-baseline.md).
 Arhitektūras lēmumi: [`docs/adr/`](../adr/README.md).

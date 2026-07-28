@@ -6,8 +6,8 @@ Latviešu valodā: [`docs/lv/izstrade.md`](../lv/izstrade.md)
 
 ## What this is
 
-A static page with **no runtime dependencies and no build step**. Three authored
-files (`index.html`, `launchpad.css`, `app.js`), one config file, the design
+A static page with **no runtime dependencies and no build step**. Four authored
+files (`index.html`, `boot.js`, `launchpad.css`, `app.js`), one config file, the design
 system in `brand/`, and two third-party libraries in `vendor/`.
 
 There is a `package.json`, but it is **for the tests only**. Nothing is built for
@@ -35,6 +35,7 @@ need one.
 
 ```
 index.html          page shell
+boot.js             font preload + theme, before first paint
 config/apps.js      CONTENT — normally the only file you edit
 app.js              rendering, theme and view toggles, keyboard
 launchpad.css       bento grid, tiles, list view, footer
@@ -260,7 +261,7 @@ cilnē" would be grammatically wrong.
 
 The launchpad is static files, so deploying means copying them. Nothing is built.
 
-Copy: `index.html`, `app.js`, `launchpad.css`, `config/`, `brand/`, `vendor/`.
+Copy: `index.html`, `boot.js`, `app.js`, `launchpad.css`, `config/`, `brand/`, `vendor/`.
 Do not copy: `test/`, `tools/`, `docs/`, `deploy/`, `node_modules/`,
 `package.json`, `playwright.config.mjs`, `.github/`.
 
@@ -291,6 +292,86 @@ Both must answer `200` with `content-type: text/javascript`.
 Ready-made server configs — IIS, nginx, Apache — are in
 [`deploy/`](../../deploy/README.md).
 
+## Security
+
+The launchpad is a static page with no server side, no authentication and no
+user data. The attack surface is small but not empty.
+
+### The config is untrusted input
+
+`config/apps.js` is edited by hand, and [Adding an app](adding-an-app.md) invites
+non-developers to do it. So the code does **not** treat it as trusted:
+
+| Field | Check |
+|---|---|
+| `url`, `accessUrl` | Only `http`, `https`, `mailto`, `tel`. Relative paths and fragments pass |
+| `contact` | Becomes a link only if it really is an email address |
+| `mark`, `markMuted` | Same-folder paths only — no schemes, no `//` |
+| `icon` | `[a-z0-9-]` only; the `fa-` prefix is applied by us |
+
+Without these, anyone allowed to add an app could put in a `javascript:` URL and
+run code **in every employee's browser**. The list links to internal systems, so
+such a URL would also serve nicely for credential phishing.
+
+All text reaches the DOM through `textContent`. There is no `innerHTML`, no
+`eval`, no `document.write`.
+
+### Security headers
+
+The `deploy/` configs set:
+
+| Header | Value | Why |
+|---|---|---|
+| `Content-Security-Policy` | see below | Second line of defence against XSS |
+| `X-Frame-Options` | `DENY` | The launchpad cannot be framed and overlaid |
+| `X-Content-Type-Options` | `nosniff` | See "Deployment" |
+| `Referrer-Policy` | `no-referrer` | Internal system URLs do not leak outward |
+| `Strict-Transport-Security` | 1 year | |
+| `Permissions-Policy` | everything off | The page needs no camera, no location |
+
+The policy:
+
+```
+default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline';
+img-src 'self' data:; font-src 'self'; connect-src 'none';
+base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'
+```
+
+**`script-src` has no `'unsafe-inline'`, and it must stay that way.** That is
+precisely why `boot.js` is a separate file rather than a `<script>` block inside
+`index.html`. A test asserts the page contains no inline script at all.
+
+`style-src` keeps `'unsafe-inline'` because Tailwind's browser build injects
+styles at runtime. The page looks identical without it — everything needed is in
+`launchpad.css` — but any Tailwind utility class added later would silently fail.
+If Tailwind utilities are not used, `'unsafe-inline'` can be dropped. Layout does
+not suffer either way: `style.setProperty` is CSSOM, which CSP does not restrict.
+
+### What is checked automatically
+
+`test/security.spec.mjs` — every test corresponds to an attack that really
+executed before the fix:
+
+- `javascript:`, `data:` and tab-obfuscated URLs do not execute
+- `mark` cannot pull in an external resource
+- `icon` cannot inject foreign classes
+- `target="_blank"` always carries `rel="noopener"`
+- the page contains no inline scripts
+- the page works under the same strict CSP the `deploy/` configs set
+
+### What stays outside the code
+
+- **Access control.** The launchpad authenticates nobody. If the list is not for
+  everyone, the server or the network has to restrict it.
+- **Repository access.** Whoever may edit `config/apps.js` decides where the
+  links to internal systems point. URL validation stops code execution; it does
+  not stop pointing at the wrong site. Commit rights are the real boundary.
+- **`vendor/` provenance.** daisyUI and Tailwind were copied from npm. Versions
+  are recorded in `vendor/README.md`, but checksums are not — when updating, make
+  sure the source is npm and not some copy.
+- **Email addresses in the config** are real department addresses. That is
+  intentional, but worth remembering if the repository ever goes public.
+
 ## Tests
 
 ```bash
@@ -307,6 +388,7 @@ npm run perf              # Lighthouse (needs `npm run serve` running)
 | `test/render.spec.mjs` | Groups, tiles, badges, views, responsiveness |
 | `test/a11y.spec.mjs` | axe-core, accessibility tree, contrast, keyboard |
 | `test/config.spec.mjs` | A malformed config does not take the page down |
+| `test/security.spec.mjs` | URL validation, CSP, external-link hygiene |
 
 Performance baseline: [`docs/perf-baseline.md`](../perf-baseline.md).
 Architecture decisions: [`docs/adr/`](../adr/README.md).

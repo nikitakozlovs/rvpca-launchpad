@@ -5,6 +5,11 @@ on:
     branches: ['**']
   pull_request:
 
+# Noklusējuma GITHUB_TOKEN var būt ar rakstīšanas tiesībām. Testiem
+# pietiek ar lasīšanu — ja kāds kompromitē atkarību, tā nevar rakstīt repo.
+permissions:
+  contents: read
+
 jobs:
   test:
     name: Playwright

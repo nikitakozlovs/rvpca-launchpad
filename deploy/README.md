@@ -37,7 +37,7 @@ Abiem jāatbild `200` un `content-type: text/javascript`. Ja tur ir
 Visu repozitorija saturu, izņemot izstrādes daļu:
 
 ```
-index.html  app.js  launchpad.css  config/  brand/  vendor/
+index.html  boot.js  app.js  launchpad.css  config/  brand/  vendor/
 ```
 
 Nav jākopē: `test/`, `tools/`, `docs/`, `deploy/`, `node_modules/`,

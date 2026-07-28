@@ -46,6 +46,7 @@ npm run check:external    # neviena ārēja atsauce avota failos
 
 ```
 index.html          lapas karkass
+boot.js             fontu priekšielāde + tēma pirms pirmās zīmēšanas
 config/apps.js      saturs: grupas un lietotnes
 app.js              attēlošana, tēmas un skata slēdži, tastatūra
 launchpad.css       bento režģis, flīzes, saraksta skats, kājene
@@ -78,7 +79,8 @@ mapes — lapa neveic nevienu ārēju pieprasījumu.
 
 ## Publicēšana
 
-Kopē `index.html`, `app.js`, `launchpad.css`, `config/`, `brand/`, `vendor/`.
+Kopē `index.html`, `boot.js`, `app.js`, `launchpad.css`, `config/`, `brand/`, `vendor/`
+un izvēlēto konfigurāciju no [`deploy/`](deploy/README.md).
 Nekas nav jābūvē.
 
 > **Ja lapa uzzīmējas, bet lietotņu karšu nav:** serveris visdrīzāk atdod `.js`
